@@ -1,0 +1,85 @@
+# the "mender-server/pkg"of the api spec
+openapi: 3.0.1
+info:
+  title: Common Schemas
+  version: "1.0"
+  description: Shared schemas used across API specifications
+paths: {}
+components:
+  schemas:
+    Error:
+      description: Error descriptor.
+      example:
+        error: error message
+        request_id: f7881e82-0492-49fb-b459-795654e7188a
+      properties:
+        error:
+          description: Description of the error.
+          type: string
+        request_id:
+          description: Request ID (same as in X-MEN-RequestID header).
+          type: string
+      required:
+        - error
+      type: object
+    NewTenant:
+      type: object
+      properties:
+        tenant_id:
+          type: string
+          description: ID of new tenant.
+      required:
+        - tenant_id
+    AuthSet:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the authentication set.
+        device_id:
+          type: string
+          description: The unique ID of the device the authentication set belongs.
+        identity_data:
+          type: object
+          description: The device's identity data.
+          additionalProperties: true
+        pubkey:
+          type: string
+          description: >-
+            PEM-encoded public key of the device authentication set.
+        status:
+          type: string
+          description: >-
+            Authorization status of the set.
+        ts:
+          type: string
+          format: date-time
+          description: >-
+            The creation timestamp of the authentication set.
+    ProvisionDevice:
+      type: object
+      properties:
+        device_id:
+          type: string
+          format: uuid
+          description: ID of the new device.
+      required:
+      - device_id
+    Scope:
+      type: string
+      description: |
+        The scope of the attribute.
+
+        Scope is a string and acts as namespace for the attribute name.
+
+        * __inventory__: Attributes reported by the device.
+        * __system__: Attributes populated by the mender-server.
+        * __identity__: Device's identity attributes provided in the device's auth request.
+        * __monitor__: Attributes populated by the monitoring add-on.
+        * __tags__: User-defined attributes associated with the device.
+      enum:
+        - system
+        - identity
+        - inventory
+        - monitor
+        - tags
