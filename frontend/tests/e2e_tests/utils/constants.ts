@@ -1,0 +1,69 @@
+// Copyright 2022 Northern.tech AS
+//
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+//
+//        http://www.apache.org/licenses/LICENSE-2.0
+//
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+import type { BrowserContextOptions } from '@playwright/test';
+
+export const testDirBase = 'integration';
+
+//    limitations under the License.
+const deviceListItem = '.deviceListItem';
+export const selectors = {
+  deploymentListItem: '.deployment-item',
+  deploymentListItemContent: '.deployment-item:not(.deployment-header-item)',
+  deviceGroupSelect: '#deployment-device-group-selection',
+  deviceListCheckbox: `${deviceListItem} input`,
+  deviceListItem,
+  email: '[name=email]',
+  loggedInText: /License information/i,
+  password: '[name=password]',
+  passwordConfirmation: '[name=password_confirmation]',
+  passwordCurrent: '[name=current_password]',
+  placeholderExample: '[placeholder*=Example]',
+  releaseSelect: '#deployment-release-selection',
+  releaseTags: 'some, tags',
+  terminalElement: '.terminal.xterm',
+  terminalText: '.terminal.xterm textarea'
+};
+
+export const expectedArtifactName = 'mender-demo-artifact';
+
+export const releaseTag = 'sometag';
+
+export const storageFolder = 'storage';
+export const storagePath = `${storageFolder}/storage.json`;
+export const spStoragePath = `${storageFolder}/sp-tenant-storage.json`;
+export const switchTenantStoragePath = `${storageFolder}/switch-tenant-storage.json`;
+
+const oneSecond = 1000;
+export const timeouts = {
+  oneSecond,
+  default: 3 * oneSecond,
+  fiveSeconds: 5 * oneSecond,
+  tenSeconds: 10 * oneSecond,
+  fifteenSeconds: 15 * oneSecond,
+  sixtySeconds: 60 * oneSecond
+};
+
+export type BrowserCookie = Exclude<BrowserContextOptions['storageState'], string>['cookies'][0];
+
+export const cookieConsentCookie: BrowserCookie = {
+  domain: '.mender.io',
+  expires: -1,
+  httpOnly: false,
+  name: 'cookieconsent_status',
+  path: '/',
+  sameSite: 'Strict',
+  secure: false,
+  value: 'allow'
+};
+
+export const emptyStorageState: Exclude<BrowserContextOptions['storageState'], string> = { cookies: [cookieConsentCookie], origins: [] };

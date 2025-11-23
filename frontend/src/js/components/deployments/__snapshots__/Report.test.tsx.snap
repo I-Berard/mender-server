@@ -1,0 +1,2176 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DeploymentReport Component > renders correctly 1`] = `
+"<body
+  style="padding-right: 1024px; overflow: hidden;"
+>
+  <div
+    aria-hidden="true"
+  />
+  <div
+    class="MuiDrawer-root MuiDrawer-anchorRight MuiDrawer-modal MuiModal-root css-2soe65-MuiModal-root-MuiDrawer-root"
+    role="presentation"
+  >
+    <div
+      aria-hidden="true"
+      class="MuiBackdrop-root MuiModal-backdrop css-4nmryk-MuiBackdrop-root-MuiModal-backdrop"
+      style="opacity: 1; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+    />
+    <div
+      data-testid="sentinelStart"
+      tabindex="0"
+    />
+    <div
+      aria-modal="true"
+      class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation16 MuiDrawer-paper MuiDrawer-paperAnchorRight css-y7ab46-MuiPaper-root-MuiDrawer-paper"
+      role="dialog"
+      style="--Paper-shadow: 0px 8px 10px -5px rgba(0,0,0,0.2),0px 16px 24px 2px rgba(0,0,0,0.14),0px 6px 30px 5px rgba(0,0,0,0.12); min-width: 75vw;"
+      tabindex="-1"
+    >
+      <div
+        class="flexbox margin-bottom-small space-between"
+      >
+        <div
+          class="flexbox center-aligned"
+        >
+          <h3
+            class="capitalized-start flexbox center-aligned"
+          >
+            Deployment 
+            details
+            <div
+              class="margin-left-small margin-right-small"
+            >
+              ID: 
+              d1
+            </div>
+          </h3>
+          <button
+            aria-label="Copy link"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-154kngp-MuiButtonBase-root-MuiIconButton-root"
+            data-mui-internal-clone-element="true"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+              data-testid="LinkIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5"
+              />
+            </svg>
+          </button>
+        </div>
+        <div
+          class="flexbox center-aligned"
+        >
+          <button
+            aria-label="Devices that have not yet started the deployment will not start the deployment.
+Devices that have already completed the deployment are not affected by the abort.
+Devices that are in the middle of the deployment at the time of abort will finish deployment normally, but will perform a rollback."
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textSecondary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorSecondary MuiButton-root MuiButton-text MuiButton-textSecondary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorSecondary css-1xj59sp-MuiButtonBase-root-MuiButton-root"
+            data-mui-internal-clone-element="true"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1sh91j5-MuiButton-startIcon"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-120dh41-MuiSvgIcon-root"
+                data-testid="BlockIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2M4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12m8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8"
+                />
+              </svg>
+            </span>
+            Abort
+             deployment
+          </button>
+          <button
+            aria-label="close"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-154kngp-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+              data-testid="CloseIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <hr
+        class="MuiDivider-root MuiDivider-fullWidth css-1jpc804-MuiDivider-root"
+      />
+      <div>
+        <div
+          class="report-container margin-top-large margin-bottom-large"
+        >
+          <div
+            class="break-all two-columns css-11rvwt0-root  column-data "
+          >
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Release
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <a
+                class="flexbox centered"
+                data-discover="true"
+                href="/releases/r1"
+                rel="noopener noreferrer"
+                style="font-weight: 500;"
+                target="_blank"
+              >
+                r1
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall margin-left-small css-120dh41-MuiSvgIcon-root"
+                  data-testid="LaunchIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                  />
+                </svg>
+              </a>
+            </div>
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Target device(s)
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <a
+                class="flexbox centered"
+                data-discover="true"
+                href="/devices"
+                rel="noopener noreferrer"
+                style="font-weight: 500;"
+                target="_blank"
+              >
+                test deployment
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall margin-left-small css-120dh41-MuiSvgIcon-root"
+                  data-testid="LaunchIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                  />
+                </svg>
+                <div
+                  class="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorDefault MuiChip-filledDefault margin-left uppercased css-1xm4ydy-MuiChip-root-chip"
+                >
+                  <span
+                    class="MuiChip-label MuiChip-labelSmall css-eccknh-MuiChip-label"
+                  >
+                    static
+                  </span>
+                </div>
+              </a>
+            </div>
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Category
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <div
+                title="Software update"
+              >
+                Software update
+              </div>
+            </div>
+          </div>
+          <div
+            class="flexbox column"
+          >
+            <div
+              class="break-all two-columns css-11rvwt0-root  column-data "
+            >
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Created at
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <time
+                  datetime="2019-01-01T12:30:00+00:00"
+                >
+                  2019-01-01 12:30
+                </time>
+              </div>
+            </div>
+            <a
+              class="margin-top-small flexbox center-aligned css-1ds475v-scheduleLink"
+            >
+              Schedule details 
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-120dh41-MuiSvgIcon-root"
+                data-testid="ArrowDropDownCircleOutlinedIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 4c4.41 0 8 3.59 8 8s-3.59 8-8 8-8-3.59-8-8 3.59-8 8-8m0-2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 13-4-4h8z"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+        <h4
+          class="dashboard-header css-hutgny-border css-zr8z23-header"
+        >
+          <span>
+            Status
+          </span>
+        </h4>
+        <div
+          class="css-qfhcfv-progressStatus flexbox space-between centered margin-bottom "
+        >
+          <div
+            class="flexbox column"
+          >
+            <div
+              class="muted"
+            >
+              Status
+            </div>
+            <h4
+              class="margin-bottom-none muted"
+            >
+              Pending
+               (awaiting devices)
+            </h4>
+          </div>
+          <div
+            class="flexbox space-between align-right"
+            style="min-width: 40%;"
+          >
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                # devices
+              </div>
+              <div>
+                1
+              </div>
+            </div>
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                Skipped
+              </div>
+              <div
+                class="status"
+              >
+                0
+              </div>
+            </div>
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                Paused
+              </div>
+              <div
+                class="status"
+              >
+                0
+              </div>
+            </div>
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                Pending
+              </div>
+              <div
+                class="status"
+              >
+                0
+              </div>
+            </div>
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                In Progress
+              </div>
+              <div
+                class="status"
+              >
+                1
+              </div>
+            </div>
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                Success
+              </div>
+              <div
+                class="status"
+              >
+                0
+              </div>
+            </div>
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                Fail
+              </div>
+              <div
+                class="status"
+              >
+                0
+              </div>
+            </div>
+          </div>
+          <div
+            class="break-all two-columns css-11rvwt0-root  column-data "
+            style="grid-template-columns: max-content 1fr;"
+          >
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Update attempts per device
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <div
+                title="1"
+              >
+                1
+              </div>
+            </div>
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Maximum number of devices
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <div
+                title="N/A"
+              >
+                N/A
+              </div>
+            </div>
+          </div>
+        </div>
+        <h4
+          class="dashboard-header css-hutgny-border css-zr8z23-header"
+        >
+          <span>
+            Devices
+          </span>
+        </h4>
+        <table
+          class="MuiTable-root margin-bottom css-taqie5-MuiTable-root-table"
+        >
+          <thead
+            class="MuiTableHead-root css-f2jk7z-MuiTableHead-root-header"
+          >
+            <tr
+              class="MuiTableRow-root MuiTableRow-head css-1xtozoh-MuiTableRow-root"
+            >
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                id
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Device Type
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Current artifact
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Current software
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Started
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Finished
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Artifact size
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              />
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Deployment status
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              />
+            </tr>
+          </thead>
+          <tbody
+            class="MuiTableBody-root css-gmh7jj-MuiTableBody-root"
+          >
+            <tr
+              class="MuiTableRow-root MuiTableRow-hover css-1xtozoh-MuiTableRow-root"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                <a
+                  data-discover="true"
+                  href="/devices?id=a1"
+                  style="font-weight: initial;"
+                >
+                  <div
+                    class="css-z9m6tn-container"
+                    style="display: grid;"
+                  >
+                    <div>
+                      a1
+                    </div>
+                  </div>
+                </a>
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                -
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                -
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                -
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                <div
+                  class=""
+                >
+                  -
+                </div>
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                <div
+                  class=""
+                >
+                  -
+                </div>
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                <div>
+                  123.00 Bytes
+                </div>
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              />
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                installing
+                <div
+                  style="position: absolute; bottom: 0px; width: 100%;"
+                >
+                  <span
+                    class="MuiLinearProgress-root MuiLinearProgress-colorPrimary MuiLinearProgress-indeterminate css-1txyin7-MuiLinearProgress-root"
+                    role="progressbar"
+                  >
+                    <span
+                      class="MuiLinearProgress-bar MuiLinearProgress-bar1 MuiLinearProgress-barColorPrimary MuiLinearProgress-bar1Indeterminate css-lcqqge-MuiLinearProgress-bar1"
+                    />
+                    <span
+                      class="MuiLinearProgress-bar MuiLinearProgress-bar2 MuiLinearProgress-barColorPrimary MuiLinearProgress-bar2Indeterminate css-lfb3c7-MuiLinearProgress-bar2"
+                    />
+                  </span>
+                </div>
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                <button
+                  class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall MuiButton-colorPrimary MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall MuiButton-colorPrimary css-1ccsd5i-MuiButtonBase-root-MuiButton-root"
+                  tabindex="0"
+                  type="button"
+                >
+                  View log
+                  <span
+                    class="MuiButton-icon MuiButton-endIcon MuiButton-iconSizeSmall css-itrjwl-MuiButton-endIcon"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                      data-testid="AutoAwesomeOutlinedIcon"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="m19 9 1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25zm0 6-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25zm-7.5-5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12zm-1.51 3.49L9 15.17l-.99-2.18L5.83 12l2.18-.99L9 8.83l.99 2.18 2.18.99z"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div
+          class="flexbox space-between center-aligned margin-top"
+        >
+          <div
+            class="flexbox"
+          >
+            <div
+              class="MuiTablePagination-root flexbox margin-top margin-top-none css-7mt0f-MuiTablePagination-root"
+            >
+              <div
+                class="MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular MuiTablePagination-toolbar css-1gak8h1-MuiToolbar-root-MuiTablePagination-toolbar"
+              >
+                <div
+                  class="MuiTablePagination-spacer flexbox no-basis css-1wtxofq-MuiTablePagination-spacer"
+                />
+                <p
+                  class="MuiTablePagination-selectLabel css-s09cke-MuiTablePagination-selectLabel"
+                  id="_r_8_"
+                >
+                  Rows per page:
+                </p>
+                <div
+                  class="MuiInputBase-root MuiInputBase-colorPrimary MuiTablePagination-select MuiSelect-root MuiTablePagination-input css-oegngy-MuiInputBase-root-MuiTablePagination-select"
+                >
+                  <div
+                    aria-expanded="false"
+                    aria-haspopup="listbox"
+                    aria-labelledby="_r_8_ _r_7_"
+                    class="MuiSelect-select MuiTablePagination-select MuiSelect-standard MuiInputBase-input css-18zjd9i-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input"
+                    id="_r_7_"
+                    role="combobox"
+                    tabindex="0"
+                  >
+                    10
+                  </div>
+                  <input
+                    aria-hidden="true"
+                    aria-invalid="false"
+                    class="MuiSelect-nativeInput css-j0riat-MuiSelect-nativeInput"
+                    name="pagination"
+                    tabindex="-1"
+                    value="10"
+                  />
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiTablePagination-selectIcon MuiSelect-iconStandard css-ug7h84-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                    data-testid="ArrowDropDownIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M7 10l5 5 5-5z"
+                    />
+                  </svg>
+                </div>
+                <p
+                  class="MuiTablePagination-displayedRows css-11cfq65-MuiTablePagination-displayedRows"
+                />
+                <div>
+                  1-1 of 1
+                </div>
+                <button
+                  aria-label="prev"
+                  class="MuiButtonBase-root Mui-disabled MuiIconButton-root Mui-disabled MuiIconButton-sizeLarge margin-left-small css-154kngp-MuiButtonBase-root-MuiIconButton-root"
+                  disabled=""
+                  tabindex="-1"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                    data-testid="KeyboardArrowLeftIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M15.41 16.59 10.83 12l4.58-4.59L14 6l-6 6 6 6z"
+                    />
+                  </svg>
+                </button>
+                <div>
+                  <button
+                    aria-label="next"
+                    class="MuiButtonBase-root Mui-disabled MuiIconButton-root Mui-disabled MuiIconButton-sizeLarge css-154kngp-MuiButtonBase-root-MuiIconButton-root"
+                    disabled=""
+                    tabindex="-1"
+                    type="button"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                      data-testid="KeyboardArrowRightIcon"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div
+              class="loaderContainer"
+            >
+              <div
+                class="small  loader"
+              >
+                <span
+                  class="dot dot_1"
+                />
+                <span
+                  class="dot dot_2"
+                />
+                <span
+                  class="dot dot_3"
+                />
+                <span
+                  class="dot dot_4"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="break-all two-columns css-11rvwt0-root compact "
+          >
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Total download size
+              </b>
+            </div>
+            <div>
+              1.21 KB
+            </div>
+          </div>
+        </div>
+        <h4
+          class="dashboard-header css-hutgny-border margin-top-large css-zr8z23-header"
+        >
+          <span>
+            Schedule details
+          </span>
+        </h4>
+        <div
+          class="flexbox"
+        >
+          <div
+            class="break-all two-columns css-11rvwt0-root  column-data "
+          >
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Start time
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <time
+                datetime="2019-01-01T12:30:00+00:00"
+              >
+                2019-01-01 12:30
+              </time>
+            </div>
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Current phase
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <div
+                title="1"
+              >
+                1
+              </div>
+            </div>
+          </div>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1ut2i8f-MuiSvgIcon-root-phasesOverviewArrow"
+            data-testid="ArrowForwardIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="m12 4-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"
+            />
+          </svg>
+          <div
+            class="break-all two-columns css-11rvwt0-root  column-data "
+          >
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                End time
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <div
+                title="-"
+              >
+                -
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="relative css-kkv4n9-container  margin-top no-background"
+        >
+          <div
+            class="chart-container"
+          >
+            <div
+              class="progress-chart relative detailed"
+            >
+              <div
+                class="progress-step"
+                style="left: 0%; width: 100%;"
+              >
+                <div
+                  class="capitalized progress-step-number muted"
+                >
+                  Phase 
+                  1
+                </div>
+                <div
+                  class="progress-bar"
+                  style="width: 100%; background-color: rgb(170, 170, 170);"
+                />
+                <div
+                  style="display: contents;"
+                >
+                  <div
+                    class="progress-bar green"
+                    style="width: 0%;"
+                  />
+                  <div
+                    class="progress-bar warning"
+                    style="left: 0%; width: 0%;"
+                  />
+                </div>
+              </div>
+              <div
+                class="progress-step relative flexbox progress-step-total"
+              >
+                <div
+                  class="progress-bar"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="deployment-phases-report margin-top margin-bottom"
+          style="grid-template-columns: repeat(auto-fit, 270px);"
+        >
+          <div
+            class="flexbox column centered css-1r3tzyq-phaseInfo "
+          >
+            <div
+              class="muted"
+            >
+              Complete
+            </div>
+            <div
+              class="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorDefault MuiChip-filledDefault css-vlg364-MuiChip-root-phaseIndex"
+            >
+              <span
+                class="MuiChip-label MuiChip-labelSmall css-eccknh-MuiChip-label"
+              >
+                Phase 1
+              </span>
+            </div>
+            <div
+              class="break-all two-columns css-11rvwt0-root  column-data "
+              style="align-self: initial;"
+            >
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Phase start time
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <time
+                  datetime="2019-01-01T12:30:00+00:00"
+                >
+                  2019-01-01 12:30
+                </time>
+              </div>
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Batch size
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <div
+                  class="muted"
+                >
+                  100% (1 device)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr
+        class="MuiDivider-root MuiDivider-fullWidth MuiDivider-light css-1my3nyb-MuiDivider-root-divider"
+      />
+    </div>
+    <div
+      data-testid="sentinelEnd"
+      tabindex="0"
+    />
+  </div>
+</body>"
+`;
+
+exports[`DeploymentReport Component > renders correctly for phased inprogress 1`] = `
+"<body
+  style="padding-right: 1024px; overflow: hidden;"
+>
+  <div
+    aria-hidden="true"
+  />
+  <div
+    class="MuiDrawer-root MuiDrawer-anchorRight MuiDrawer-modal MuiModal-root css-2soe65-MuiModal-root-MuiDrawer-root"
+    role="presentation"
+  >
+    <div
+      aria-hidden="true"
+      class="MuiBackdrop-root MuiModal-backdrop css-4nmryk-MuiBackdrop-root-MuiModal-backdrop"
+      style="opacity: 1; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+    />
+    <div
+      data-testid="sentinelStart"
+      tabindex="0"
+    />
+    <div
+      aria-modal="true"
+      class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation16 MuiDrawer-paper MuiDrawer-paperAnchorRight css-y7ab46-MuiPaper-root-MuiDrawer-paper"
+      role="dialog"
+      style="--Paper-shadow: 0px 8px 10px -5px rgba(0,0,0,0.2),0px 16px 24px 2px rgba(0,0,0,0.14),0px 6px 30px 5px rgba(0,0,0,0.12); min-width: 75vw;"
+      tabindex="-1"
+    >
+      <div
+        class="flexbox margin-bottom-small space-between"
+      >
+        <div
+          class="flexbox center-aligned"
+        >
+          <h3
+            class="capitalized-start flexbox center-aligned"
+          >
+            Deployment 
+            details
+            <div
+              class="margin-left-small margin-right-small"
+            >
+              ID: 
+              d3
+            </div>
+          </h3>
+          <button
+            aria-label="Copy link"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-154kngp-MuiButtonBase-root-MuiIconButton-root"
+            data-mui-internal-clone-element="true"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+              data-testid="LinkIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5"
+              />
+            </svg>
+          </button>
+        </div>
+        <div
+          class="flexbox center-aligned"
+        >
+          <button
+            aria-label="Devices that have not yet started the deployment will not start the deployment.
+Devices that have already completed the deployment are not affected by the abort.
+Devices that are in the middle of the deployment at the time of abort will finish deployment normally, but will perform a rollback."
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textSecondary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorSecondary MuiButton-root MuiButton-text MuiButton-textSecondary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorSecondary css-1xj59sp-MuiButtonBase-root-MuiButton-root"
+            data-mui-internal-clone-element="true"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1sh91j5-MuiButton-startIcon"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-120dh41-MuiSvgIcon-root"
+                data-testid="BlockIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2M4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12m8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8"
+                />
+              </svg>
+            </span>
+            Abort
+             deployment
+          </button>
+          <button
+            aria-label="close"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-154kngp-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+              data-testid="CloseIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <hr
+        class="MuiDivider-root MuiDivider-fullWidth css-1jpc804-MuiDivider-root"
+      />
+      <div>
+        <div
+          class="report-container margin-top-large margin-bottom-large"
+        >
+          <div
+            class="break-all two-columns css-11rvwt0-root  column-data "
+          >
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Release
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <a
+                class="flexbox centered"
+                data-discover="true"
+                href="/releases/undefined"
+                rel="noopener noreferrer"
+                style="font-weight: 500;"
+                target="_blank"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall margin-left-small css-120dh41-MuiSvgIcon-root"
+                  data-testid="LaunchIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                  />
+                </svg>
+              </a>
+            </div>
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Target device(s)
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <a
+                class="flexbox centered"
+                data-discover="true"
+                href="/devices"
+                rel="noopener noreferrer"
+                style="font-weight: 500;"
+                target="_blank"
+              >
+                Test
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall margin-left-small css-120dh41-MuiSvgIcon-root"
+                  data-testid="LaunchIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"
+                  />
+                </svg>
+                <div
+                  class="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorDefault MuiChip-filledDefault margin-left uppercased css-1xm4ydy-MuiChip-root-chip"
+                >
+                  <span
+                    class="MuiChip-label MuiChip-labelSmall css-eccknh-MuiChip-label"
+                  >
+                    static
+                  </span>
+                </div>
+              </a>
+            </div>
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Category
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <div
+                title="Software update"
+              >
+                Software update
+              </div>
+            </div>
+          </div>
+          <div
+            class="flexbox column"
+          >
+            <div
+              class="break-all two-columns css-11rvwt0-root  column-data "
+            >
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Created at
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <time
+                  datetime="2019-01-31T12:59:30+00:00"
+                >
+                  2019-01-31 12:59
+                </time>
+              </div>
+            </div>
+            <a
+              class="margin-top-small flexbox center-aligned css-1ds475v-scheduleLink"
+            >
+              Schedule details 
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-120dh41-MuiSvgIcon-root"
+                data-testid="ArrowDropDownCircleOutlinedIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 4c4.41 0 8 3.59 8 8s-3.59 8-8 8-8-3.59-8-8 3.59-8 8-8m0-2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 13-4-4h8z"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+        <h4
+          class="dashboard-header css-hutgny-border css-zr8z23-header"
+        >
+          <span>
+            Status
+          </span>
+        </h4>
+        <div
+          class="css-qfhcfv-progressStatus flexbox space-between centered margin-bottom "
+        >
+          <div
+            class="flexbox column"
+          >
+            <div
+              class="muted"
+            >
+              Status
+            </div>
+            <h4
+              class="margin-bottom-none muted"
+            >
+              In Progress
+            </h4>
+          </div>
+          <div
+            class="flexbox space-between align-right"
+            style="min-width: 40%;"
+          >
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                # devices
+              </div>
+              <div>
+                0
+              </div>
+            </div>
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                Skipped
+              </div>
+              <div
+                class="status"
+              >
+                0
+              </div>
+            </div>
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                Paused
+              </div>
+              <div
+                class="status"
+              >
+                0
+              </div>
+            </div>
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                Pending
+              </div>
+              <div
+                class="status"
+              >
+                0
+              </div>
+            </div>
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                In Progress
+              </div>
+              <div
+                class="status"
+              >
+                0
+              </div>
+            </div>
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                Success
+              </div>
+              <div
+                class="status"
+              >
+                0
+              </div>
+            </div>
+            <div
+              class="flexbox column"
+            >
+              <div
+                class="muted margin-bottom-small"
+              >
+                Fail
+              </div>
+              <div
+                class="status"
+              >
+                0
+              </div>
+            </div>
+          </div>
+          <div
+            class="break-all two-columns css-11rvwt0-root  column-data "
+            style="grid-template-columns: max-content 1fr;"
+          >
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Update attempts per device
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <div
+                title="0"
+              >
+                0
+              </div>
+            </div>
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Maximum number of devices
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <div
+                title="N/A"
+              >
+                N/A
+              </div>
+            </div>
+          </div>
+        </div>
+        <h4
+          class="dashboard-header css-hutgny-border css-zr8z23-header"
+        >
+          <span>
+            Devices
+          </span>
+        </h4>
+        <table
+          class="MuiTable-root margin-bottom css-taqie5-MuiTable-root-table"
+        >
+          <thead
+            class="MuiTableHead-root css-f2jk7z-MuiTableHead-root-header"
+          >
+            <tr
+              class="MuiTableRow-root MuiTableRow-head css-1xtozoh-MuiTableRow-root"
+            >
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                id
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Device Type
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Current artifact
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Current software
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Started
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Finished
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Artifact size
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              />
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Attempts
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              >
+                Deployment status
+              </th>
+              <th
+                class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium columnHeader nonSortable css-1orzuox-MuiTableCell-root"
+                scope="col"
+              />
+            </tr>
+          </thead>
+          <tbody
+            class="MuiTableBody-root css-gmh7jj-MuiTableBody-root"
+          >
+            <tr
+              class="MuiTableRow-root MuiTableRow-hover css-1xtozoh-MuiTableRow-root"
+            >
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                <a
+                  data-discover="true"
+                  href="/devices?id=a1"
+                  style="font-weight: initial;"
+                >
+                  <div
+                    class="css-z9m6tn-container"
+                    style="display: grid;"
+                  >
+                    <div>
+                      a1
+                    </div>
+                  </div>
+                </a>
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                raspberrypi4
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                -
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                -
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                <div
+                  class=""
+                >
+                  -
+                </div>
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                <div
+                  class=""
+                >
+                  -
+                </div>
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                <div>
+                  0 Bytes
+                </div>
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              />
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                1 / NaN
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              >
+                accepted
+                <div
+                  style="position: absolute; bottom: 0px; width: 100%;"
+                >
+                  <span
+                    class="MuiLinearProgress-root MuiLinearProgress-colorPrimary MuiLinearProgress-indeterminate css-1txyin7-MuiLinearProgress-root"
+                    role="progressbar"
+                  >
+                    <span
+                      class="MuiLinearProgress-bar MuiLinearProgress-bar1 MuiLinearProgress-barColorPrimary MuiLinearProgress-bar1Indeterminate css-lcqqge-MuiLinearProgress-bar1"
+                    />
+                    <span
+                      class="MuiLinearProgress-bar MuiLinearProgress-bar2 MuiLinearProgress-barColorPrimary MuiLinearProgress-bar2Indeterminate css-lfb3c7-MuiLinearProgress-bar2"
+                    />
+                  </span>
+                </div>
+              </td>
+              <td
+                class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium relative css-1dc80h3-MuiTableCell-root"
+              />
+            </tr>
+          </tbody>
+        </table>
+        <div
+          class="flexbox space-between center-aligned margin-top"
+        >
+          <div
+            class="flexbox"
+          >
+            <div
+              class="MuiTablePagination-root flexbox margin-top margin-top-none css-7mt0f-MuiTablePagination-root"
+            >
+              <div
+                class="MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular MuiTablePagination-toolbar css-1gak8h1-MuiToolbar-root-MuiTablePagination-toolbar"
+              >
+                <div
+                  class="MuiTablePagination-spacer flexbox no-basis css-1wtxofq-MuiTablePagination-spacer"
+                />
+                <p
+                  class="MuiTablePagination-selectLabel css-s09cke-MuiTablePagination-selectLabel"
+                  id="_r_j_"
+                >
+                  Rows per page:
+                </p>
+                <div
+                  class="MuiInputBase-root MuiInputBase-colorPrimary MuiTablePagination-select MuiSelect-root MuiTablePagination-input css-oegngy-MuiInputBase-root-MuiTablePagination-select"
+                >
+                  <div
+                    aria-expanded="false"
+                    aria-haspopup="listbox"
+                    aria-labelledby="_r_j_ _r_i_"
+                    class="MuiSelect-select MuiTablePagination-select MuiSelect-standard MuiInputBase-input css-18zjd9i-MuiNativeSelect-root-MuiSelect-select-MuiInputBase-input"
+                    id="_r_i_"
+                    role="combobox"
+                    tabindex="0"
+                  >
+                    10
+                  </div>
+                  <input
+                    aria-hidden="true"
+                    aria-invalid="false"
+                    class="MuiSelect-nativeInput css-j0riat-MuiSelect-nativeInput"
+                    name="pagination"
+                    tabindex="-1"
+                    value="10"
+                  />
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiTablePagination-selectIcon MuiSelect-iconStandard css-ug7h84-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon"
+                    data-testid="ArrowDropDownIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M7 10l5 5 5-5z"
+                    />
+                  </svg>
+                </div>
+                <p
+                  class="MuiTablePagination-displayedRows css-11cfq65-MuiTablePagination-displayedRows"
+                />
+                <div>
+                  1-10 of 100
+                </div>
+                <button
+                  aria-label="prev"
+                  class="MuiButtonBase-root Mui-disabled MuiIconButton-root Mui-disabled MuiIconButton-sizeLarge margin-left-small css-154kngp-MuiButtonBase-root-MuiIconButton-root"
+                  disabled=""
+                  tabindex="-1"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                    data-testid="KeyboardArrowLeftIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M15.41 16.59 10.83 12l4.58-4.59L14 6l-6 6 6 6z"
+                    />
+                  </svg>
+                </button>
+                <div>
+                  <button
+                    aria-label="next"
+                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-154kngp-MuiButtonBase-root-MuiIconButton-root"
+                    tabindex="0"
+                    type="button"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                      data-testid="KeyboardArrowRightIcon"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div
+              class="loaderContainer"
+            >
+              <div
+                class="small  loader"
+              >
+                <span
+                  class="dot dot_1"
+                />
+                <span
+                  class="dot dot_2"
+                />
+                <span
+                  class="dot dot_3"
+                />
+                <span
+                  class="dot dot_4"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="break-all two-columns css-11rvwt0-root compact "
+          >
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Total download size
+              </b>
+            </div>
+            <div>
+              1.21 KB
+            </div>
+          </div>
+        </div>
+        <h4
+          class="dashboard-header css-hutgny-border margin-top-large css-zr8z23-header"
+        >
+          <span>
+            Schedule details
+          </span>
+        </h4>
+        <div
+          class="flexbox"
+        >
+          <div
+            class="break-all two-columns css-11rvwt0-root  column-data "
+          >
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Start time
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <time
+                datetime="2019-01-31T12:59:30+00:00"
+              >
+                2019-01-31 12:59
+              </time>
+            </div>
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                Current phase
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <div
+                title="N/A"
+              >
+                N/A
+              </div>
+            </div>
+          </div>
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1ut2i8f-MuiSvgIcon-root-phasesOverviewArrow"
+            data-testid="ArrowForwardIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="m12 4-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"
+            />
+          </svg>
+          <div
+            class="break-all two-columns css-11rvwt0-root  column-data "
+          >
+            <div
+              class="align-right  muted"
+            >
+              <b>
+                End time
+              </b>
+            </div>
+            <div
+              class="flexbox "
+            >
+              <div
+                title="-"
+              >
+                -
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="relative css-kkv4n9-container  margin-top no-background"
+        >
+          <div
+            class="chart-container"
+          >
+            <div
+              class="progress-chart relative detailed"
+            >
+              <div
+                class="progress-step"
+                style="left: 0%; width: 2%;"
+              >
+                <div
+                  class="capitalized progress-step-number muted"
+                >
+                  Phase 
+                  1
+                </div>
+                <div
+                  style="display: contents;"
+                >
+                  <div
+                    class="progress-bar green"
+                    style="width: 0%;"
+                  />
+                  <div
+                    class="progress-bar warning"
+                    style="left: 0%; width: 0%;"
+                  />
+                </div>
+              </div>
+              <div
+                class="progress-step"
+                style="left: 2%; width: 3%;"
+              >
+                <div
+                  class="capitalized progress-step-number muted"
+                >
+                  Phase 
+                  2
+                </div>
+                <div
+                  style="display: contents;"
+                >
+                  <div
+                    class="progress-bar green"
+                    style="width: 0%;"
+                  />
+                  <div
+                    class="progress-bar warning"
+                    style="left: 0%; width: 0%;"
+                  />
+                </div>
+              </div>
+              <div
+                class="progress-step"
+                style="left: 5%; width: 5%;"
+              >
+                <div
+                  class="capitalized progress-step-number muted"
+                >
+                  Phase 
+                  3
+                </div>
+                <div
+                  style="display: contents;"
+                >
+                  <div
+                    class="progress-bar green"
+                    style="width: 0%;"
+                  />
+                  <div
+                    class="progress-bar warning"
+                    style="left: 0%; width: 0%;"
+                  />
+                </div>
+              </div>
+              <div
+                class="progress-step"
+                style="left: 10%; width: 5%;"
+              >
+                <div
+                  class="capitalized progress-step-number muted"
+                >
+                  Phase 
+                  4
+                </div>
+                <div
+                  style="display: contents;"
+                >
+                  <div
+                    class="progress-bar green"
+                    style="width: 0%;"
+                  />
+                  <div
+                    class="progress-bar warning"
+                    style="left: 0%; width: 0%;"
+                  />
+                </div>
+              </div>
+              <div
+                class="progress-step"
+                style="left: 15%; width: 85%;"
+              >
+                <div
+                  class="capitalized progress-step-number muted"
+                >
+                  Phase 
+                  5
+                </div>
+                <div
+                  style="display: contents;"
+                >
+                  <div
+                    class="progress-bar green"
+                    style="width: 0%;"
+                  />
+                  <div
+                    class="progress-bar warning"
+                    style="left: 0%; width: 0%;"
+                  />
+                </div>
+              </div>
+              <div
+                class="progress-step relative flexbox progress-step-total"
+              >
+                <div
+                  class="progress-bar"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="deployment-phases-report margin-top margin-bottom"
+          style="grid-template-columns: repeat(auto-fit, 270px);"
+        >
+          <div
+            class="flexbox column centered css-1r3tzyq-phaseInfo "
+          >
+            <div>
+              Begins in 17 days 23 h 59 m
+            </div>
+            <div
+              class="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorDefault MuiChip-filledDefault css-vlg364-MuiChip-root-phaseIndex"
+            >
+              <span
+                class="MuiChip-label MuiChip-labelSmall css-eccknh-MuiChip-label"
+              >
+                Phase 1
+              </span>
+            </div>
+            <div
+              class="break-all two-columns css-11rvwt0-root  column-data "
+              style="align-self: initial;"
+            >
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Phase start time
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <time
+                  datetime="2019-01-31T12:59:30+00:00"
+                >
+                  2019-01-31 12:59
+                </time>
+              </div>
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Batch size
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <div
+                  class="muted"
+                >
+                  2% (2 devices)
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="flexbox column centered css-1r3tzyq-phaseInfo "
+          >
+            <div>
+              Begins in 21 days 22 h 45 m
+            </div>
+            <div
+              class="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorDefault MuiChip-filledDefault css-vlg364-MuiChip-root-phaseIndex"
+            >
+              <span
+                class="MuiChip-label MuiChip-labelSmall css-eccknh-MuiChip-label"
+              >
+                Phase 2
+              </span>
+            </div>
+            <div
+              class="break-all two-columns css-11rvwt0-root  column-data "
+              style="align-self: initial;"
+            >
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Phase start time
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <time
+                  datetime="2019-02-04T11:45:10+00:00"
+                >
+                  2019-02-04 11:45
+                </time>
+              </div>
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Batch size
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <div
+                  class="muted"
+                >
+                  3% (3 devices)
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="flexbox column centered css-1r3tzyq-phaseInfo "
+          >
+            <div>
+              Begins in 22 days 22 h 45 m
+            </div>
+            <div
+              class="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorDefault MuiChip-filledDefault css-vlg364-MuiChip-root-phaseIndex"
+            >
+              <span
+                class="MuiChip-label MuiChip-labelSmall css-eccknh-MuiChip-label"
+              >
+                Phase 3
+              </span>
+            </div>
+            <div
+              class="break-all two-columns css-11rvwt0-root  column-data "
+              style="align-self: initial;"
+            >
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Phase start time
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <time
+                  datetime="2019-02-05T11:45:10+00:00"
+                >
+                  2019-02-05 11:45
+                </time>
+              </div>
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Batch size
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <div
+                  class="muted"
+                >
+                  5% (5 devices)
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="flexbox column centered css-1r3tzyq-phaseInfo "
+          >
+            <div>
+              Begins in 23 days 22 h 45 m
+            </div>
+            <div
+              class="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorDefault MuiChip-filledDefault css-vlg364-MuiChip-root-phaseIndex"
+            >
+              <span
+                class="MuiChip-label MuiChip-labelSmall css-eccknh-MuiChip-label"
+              >
+                Phase 4
+              </span>
+            </div>
+            <div
+              class="break-all two-columns css-11rvwt0-root  column-data "
+              style="align-self: initial;"
+            >
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Phase start time
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <time
+                  datetime="2019-02-06T11:45:10+00:00"
+                >
+                  2019-02-06 11:45
+                </time>
+              </div>
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Batch size
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <div
+                  class="muted"
+                >
+                  5% (5 devices)
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="flexbox column centered css-1r3tzyq-phaseInfo "
+          >
+            <div>
+              Begins in 08 days 12 h 45 m
+            </div>
+            <div
+              class="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorDefault MuiChip-filledDefault css-vlg364-MuiChip-root-phaseIndex"
+            >
+              <span
+                class="MuiChip-label MuiChip-labelSmall css-eccknh-MuiChip-label"
+              >
+                Phase 5
+              </span>
+            </div>
+            <div
+              class="break-all two-columns css-11rvwt0-root  column-data "
+              style="align-self: initial;"
+            >
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Phase start time
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <time
+                  datetime="2019-02-21T11:45:10+00:00"
+                >
+                  2019-02-21 11:45
+                </time>
+              </div>
+              <div
+                class="align-right  muted"
+              >
+                <b>
+                  Batch size
+                </b>
+              </div>
+              <div
+                class="flexbox "
+              >
+                <div
+                  class="muted"
+                >
+                  5% (5 devices)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr
+        class="MuiDivider-root MuiDivider-fullWidth MuiDivider-light css-1my3nyb-MuiDivider-root-divider"
+      />
+    </div>
+    <div
+      data-testid="sentinelEnd"
+      tabindex="0"
+    />
+  </div>
+</body>"
+`;

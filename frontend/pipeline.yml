@@ -1,0 +1,358 @@
+variables:
+  NODE_IMAGE:
+    value: 'node:24-alpine'
+    description: 'Node version to use for building and testing'
+  FRONTEND_REPOSITORY: mendersoftware/gui
+  DOCS_VERSION: development
+  MENDER_IMAGE_GUI: ${MENDER_IMAGE_REGISTRY}/${MENDER_IMAGE_REPOSITORY}/gui:${MENDER_IMAGE_TAG}
+  FF_TIMESTAMPS: true
+
+test:frontend:lint:
+  stage: test
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/${NODE_IMAGE}
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /^(staging|saas-[a-zA-Z0-9.]+)$/
+      when: never
+    - changes:
+        paths: ['frontend/**/*']
+        compare_to: '${RULES_CHANGES_COMPARE_TO_REF}'
+  needs: []
+  script:
+    - cd frontend
+    - npm ci --cache .npm --prefer-offline
+    - cd tests/e2e_tests && npm ci && cd ../..
+    - npm run lint
+
+test:frontend:license-headers:
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/denoland/deno:debian-2.0.2
+  stage: test
+  rules:
+    - changes:
+        paths: ['frontend/**/*']
+        compare_to: '${RULES_CHANGES_COMPARE_TO_REF}'
+  needs: []
+  before_script:
+    - apt update && apt install git -yq
+  script:
+    - deno task --cwd frontend/scripts licenseCheck --rootDir $(pwd)
+    - git diff --exit-code frontend/src
+    - git diff --exit-code frontend/tests
+
+test:frontend:licenses:
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/denoland/deno:debian-1.46.3
+  stage: test
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /^(staging|saas-[a-zA-Z0-9.]+)$/
+      when: never
+    - changes:
+        paths: ['frontend/**/*']
+        compare_to: '${RULES_CHANGES_COMPARE_TO_REF}'
+  needs:
+    - job: build:frontend:docker
+      artifacts: true
+  before_script:
+    - cd frontend
+    - apt-get update && apt-get install -yq curl
+    - curl -fsSL https://deb.nodesource.com/setup_24.x | bash
+    - apt-get install -yq nodejs
+    - npm ci
+  script:
+    - deno run --allow-env --allow-read --allow-sys tests/licenses/licenseCheck.ts --rootDir $(pwd)
+
+test:frontend:unit:
+  stage: test
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/${NODE_IMAGE}
+  rules:
+    - changes:
+        paths: ['frontend/**/*']
+        compare_to: '${RULES_CHANGES_COMPARE_TO_REF}'
+      when: on_success
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: on_success
+  needs: []
+  timeout: 10 minutes
+  script:
+    - cd frontend
+    - npm ci
+    - npm run test -- --reporter=default --reporter=junit --outputFile.junit=./junit.xml --coverage
+  after_script:
+    - mkdir logs && cp frontend/logs/* logs/
+  artifacts:
+    expire_in: 2w
+    paths:
+      - frontend/coverage
+      - logs
+    reports:
+      junit: frontend/junit.xml
+    when: always
+
+test:frontend:docs-links:
+  stage: test
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/${NODE_IMAGE}
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /^(staging|saas-[a-zA-Z0-9.]+)$/
+      when: never
+    - changes:
+        paths: ['frontend/**/*']
+        compare_to: '${RULES_CHANGES_COMPARE_TO_REF}'
+  needs: []
+  before_script:
+    - apk add --no-cache curl
+    - cd frontend
+  script:
+    - links=$(grep -r docs.mender.io src/ | grep -v snapshots | sed -e 's,\${docsVersion},'${DOCS_VERSION}'/,g' | sed -e 's,\${path},''/,g' | egrep -o 'https?://[^ `"]+' | sort | uniq)
+    - error=0
+    - |
+      for url in $links; do
+        if ! curl --output /dev/null --silent --head --fail $url; then
+          error=1
+          echo "[ko] $url"
+        else
+          echo "[ok] $url"
+        fi
+      done
+      if [ $error -gt 0 ]; then
+        exit 1
+      fi
+
+test:frontend:docs-links:hosted:
+  extends: test:frontend:docs-links
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /^(staging|saas-[a-zA-Z0-9.]+)$/
+  variables:
+    DOCS_VERSION: hosted
+
+build:frontend:docker:
+  extends: .template:build:docker
+  rules:
+    - changes:
+        paths: ['frontend/**/*', 'compose/**/*', 'docker-compose.yml']
+        compare_to: '${RULES_CHANGES_COMPARE_TO_REF}'
+      when: always
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: always
+  script:
+    - cd frontend
+    - if test -z "${DOCKER_PLATFORM}"; then
+    - docker context create ci;
+    - fi
+    - docker buildx create ${DOCKER_BUILDKITARGS} --name gui-builder --driver=docker-container ci
+    # build production target
+    - docker build
+      --tag ${MENDER_IMAGE_GUI}
+      --builder=gui-builder
+      --build-arg GIT_COMMIT_TAG="${CI_COMMIT_TAG}"
+      --build-arg GIT_COMMIT_SHA="${CI_COMMIT_SHA}"
+      --build-arg SENTRY_ORG="${SENTRY_ORG}"
+      --build-arg SENTRY_URL="${SENTRY_URL}"
+      --secret id=sentryAuthToken,env=SENTRY_AUTH_TOKEN
+      --platform ${DOCKER_PLATFORM:-linux/amd64}
+      --provenance false
+      --push
+      .
+    - docker context use ci
+    - docker run --rm --entrypoint "/bin/sh" -v $(pwd):/extract ${MENDER_IMAGE_GUI} -c "cp licenses.json /extract/"
+  artifacts:
+    expire_in: 1w
+    paths:
+      - frontend/licenses.json
+
+.template:test:frontend:acceptance:
+  stage: test
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/mendersoftware/mender-test-containers:gui-e2e-testing
+  extends: .build:base
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: on_success
+    - changes:
+        paths: ['frontend/**/*', 'compose/**/*', 'docker-compose.yml']
+        compare_to: '${RULES_CHANGES_COMPARE_TO_REF}'
+      when: on_success
+  needs:
+    - job: build:frontend:docker
+      artifacts: false
+    - job: build:backend:docker
+      artifacts: false
+      optional: true
+  services:
+    - name: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker:${DOCKER_VERSION}-dind
+      alias: docker
+  before_script:
+    - curl -fsSL https://get.docker.com | sh -s -- --version 27.3.1
+    - !reference [.requires-docker]
+    - !reference [.dind-login]
+    # If branch is not protected, use upstream main
+    # Otherwise use the local pipeline reference.
+    - |
+      if test "$CI_COMMIT_REF_PROTECTED" != "true"; then
+        unset MENDER_IMAGE_REGISTRY MENDER_IMAGE_REPOSITORY
+        export MENDER_IMAGE_TAG=main
+      fi
+    - npm i --prefix frontend/tests/e2e_tests
+  artifacts:
+    expire_in: 2w
+    paths:
+      - frontend/coverage
+      - frontend/screenshots
+      - frontend/logs
+      - frontend/junit
+    reports:
+      junit:
+        - frontend/junit/results.xml
+    when: always
+  tags:
+    - k8s
+
+test:frontend:acceptance:
+  extends: .template:test:frontend:acceptance
+  script:
+    - npm run script --prefix frontend/tests/e2e_tests -- --environment os
+
+test:frontend:acceptance:enterprise:
+  extends: .template:test:frontend:acceptance
+  rules:
+    # This job can only run on protected branches
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+  script:
+    - unset MENDER_IMAGE_REGISTRY MENDER_IMAGE_REPOSITORY
+    - export MENDER_IMAGE_TAG=main
+    - docker login -u "$REGISTRY_MENDER_IO_USERNAME" -p "$REGISTRY_MENDER_IO_PASSWORD" registry.mender.io
+    - npm run script --prefix frontend/tests/e2e_tests -- --environment enterprise
+
+test:frontend:acceptance:enterprise:qemu:
+  extends: .template:test:frontend:acceptance
+  variables:
+    TEST_ENVIRONMENT: enterprise
+  rules:
+    # This job can only run on protected branches
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+  script:
+    - unset MENDER_IMAGE_REGISTRY MENDER_IMAGE_REPOSITORY
+    - export MENDER_IMAGE_TAG=main
+    - docker login -u "$REGISTRY_MENDER_IO_USERNAME" -p "$REGISTRY_MENDER_IO_PASSWORD" registry.mender.io
+    - npm run script --prefix frontend/tests/e2e_tests -- --environment enterprise --variant qemu
+
+publish:frontend:tests:
+  extends: coveralls:done
+  stage: publish
+  rules:
+    - if: $CI_COMMIT_REF_PROTECTED == "true"
+      when: on_success
+    - changes:
+        paths: ['frontend/**/*']
+        compare_to: '${RULES_CHANGES_COMPARE_TO_REF}'
+  variables:
+    COVERALLS_FLAG_NAME: frontend-unit
+  needs:
+    - job: test:frontend:unit
+      artifacts: true
+  script:
+    - coveralls report --format lcov --job-flag frontend-unit frontend/coverage/lcov.info
+
+publish:frontend:e2e-tests:
+  extends: coveralls:done
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: on_success
+    - changes:
+        paths: ['frontend/**/*', 'compose/**/*', 'docker-compose.yml']
+        compare_to: '${RULES_CHANGES_COMPARE_TO_REF}'
+      when: on_success
+  needs:
+    - job: test:frontend:acceptance
+      artifacts: true
+  allow_failure: true # QA-925 - Coveralls servers are unreliable.
+  script:
+    - sed -i -re 's/(^[SF:]+[../]+)(.*)$/SF:\2/' frontend/coverage/lcov.info
+    - coveralls report -n
+      --parallel
+      --format lcov
+      --job-flag frontend-e2e
+      frontend/coverage/lcov.info
+
+publish:frontend:e2e-tests:enterprise:
+  extends: publish:frontend:e2e-tests
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: on_success
+  needs:
+    - job: test:frontend:acceptance:enterprise
+      artifacts: true
+  variables:
+    COVERALLS_SERVICE_JOB_NUMBER: frontend-e2e-enterprise
+    COVERALLS_FLAG_NAME: frontend-e2e-enterprise
+
+publish:frontend:docker:
+  extends: publish:backend:docker
+  variables:
+    MENDER_PUBLISH_REGISTRY: docker.io
+  script:
+    - export MENDER_PUBLISH_IMAGE="${MENDER_PUBLISH_REGISTRY}/${FRONTEND_REPOSITORY}"
+    - echo "About to publish ${DOCKER_TAG} to ${MENDER_PUBLISH_IMAGE}:${MENDER_PUBLISH_TAG}"
+    - |
+      skopeo copy --multi-arch all \
+        --digestfile .digests/gui \
+        docker://${MENDER_IMAGE_GUI} \
+        docker://${MENDER_PUBLISH_IMAGE}:${MENDER_PUBLISH_TAG} # covers vX.Y.Z + -fragment/ -build tags
+    - |
+      if echo -n "${MENDER_PUBLISH_TAG}" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+        skopeo copy --multi-arch all docker://${MENDER_IMAGE_GUI} docker://${MENDER_PUBLISH_IMAGE}/gui:$(echo -n $MENDER_PUBLISH_TAG | cut -d . -f-2)
+        skopeo copy --multi-arch all docker://${MENDER_IMAGE_GUI} docker://${MENDER_PUBLISH_IMAGE}/gui:$(echo -n $MENDER_PUBLISH_TAG | cut -d . -f-1)
+
+        # Check if we need to update latest
+        MAJOR_VERSION=$(echo $MENDER_PUBLISH_TAG | cut -d . -f1 | tr -d -c '[:digit:]')
+        MINOR_VERSION=$(echo $MENDER_PUBLISH_TAG | cut -d . -f2 | tr -d -c '[:digit:]')
+        PATCH_VERSION=$(echo $MENDER_PUBLISH_TAG | cut -d . -f3 | tr -d -c '[:digit:]')
+        NEXT_PATCH="${MENDER_PUBLISH_IMAGE}/gui:v${MAJOR_VERSION}.${MINOR_VERSION}.$(expr $PATCH_VERSION + 1)"
+        NEXT_MINOR="${MENDER_PUBLISH_IMAGE}/gui:v${MAJOR_VERSION}.$(expr $MINOR_VERSION + 1)"
+        NEXT_MAJOR="${MENDER_PUBLISH_IMAGE}/gui:v$(expr $MAJOR_VERSION + 1)"
+        if skopeo inspect "docker://$NEXT_PATCH" 1>/dev/null 2>&1; then
+          echo "Next image '$NEXT_PATCH' exists: not updating 'latest' reference"
+        elif skopeo inspect "docker://$NEXT_MINOR" 1>/dev/null 2>&1; then
+          echo "Next image '$NEXT_MINOR' exists: not updating 'latest' reference"
+        elif skopeo inspect "docker://$NEXT_MAJOR" 1>/dev/null 2>&1; then
+          echo "Next image '$NEXT_MAJOR' exists: not updating 'latest' reference"
+        else
+          echo "Updating 'latest' reference: ${MENDER_PUBLISH_IMAGE}/gui:latest"
+          skopeo copy --multi-arch all docker://${MENDER_IMAGE_GUI} docker://${MENDER_PUBLISH_IMAGE}/gui:latest
+        fi
+      fi
+  artifacts:
+    when: on_success
+    expire_in: 1w
+    paths:
+      - .digests
+
+publish:frontend:licenses:
+  stage: publish
+  rules:
+    - changes:
+        paths: ['frontend/**/*']
+        compare_to: '${RULES_CHANGES_COMPARE_TO_REF}'
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: on_success
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/denoland/deno:debian-2.0.2
+  needs:
+    - job: build:frontend:docker
+      artifacts: true
+  script:
+    - deno task --cwd frontend/scripts licenseFormatting --rootDir $(pwd)
+  artifacts:
+    when: on_success
+    expire_in: 1w
+    paths:
+      - frontend/licenses.md
+
+publish:frontend:sentry:finalize:
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/getsentry/sentry-cli
+  stage: .post
+  rules:
+    - if: $SENTRY_AUTH_TOKEN == null
+      when: never
+    - if: $CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_REF_NAME == "main"
+      when: on_success
+  allow_failure: true
+  script:
+    # this has to be in one line as the cli won't work with formatting induced white space around passed options
+    - sentry-cli --auth-token $SENTRY_AUTH_TOKEN --url $SENTRY_URL releases finalize mender-frontend@$CI_COMMIT_SHA  --project mender-frontend  --org $SENTRY_ORG

@@ -1,0 +1,79 @@
+name: gui-tests
+configs:
+  client_json:
+    content: |
+      {
+        "InventoryPollIntervalSeconds": 5,
+        "RetryPollIntervalSeconds": 5,
+        "ServerURL": "${SERVER_URL:-https://docker.mender.io}",
+        "UpdatePollIntervalSeconds": 5,
+        "TenantToken": "${TENANT_TOKEN}"
+      }
+  client_connect_json:
+    content: |
+      {
+        "ShellCommand": "/bin/bash",
+        "User": "root",
+        "Terminal": { "Height": 24, "Width": 128 }
+      }
+services:
+  gui-tests-runner:
+    image: mendersoftware/mender-test-containers:gui-e2e-testing
+    command: ['tail', '-f', '/dev/null']
+    environment:
+      - TEST_ENVIRONMENT
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    networks:
+      - default
+    depends_on:
+      - client
+      - create-artifact-worker
+      - deployments
+      - deviceauth
+      - gui
+      - inventory
+      - useradm
+      - workflows
+      - workflows-worker
+      - mongo
+      - nats
+      - s3
+      - traefik
+    volumes:
+      - ${GUI_REPOSITORY}/coverage:/e2e/coverage
+      - ${GUI_REPOSITORY}/junit:/e2e/junit
+      - ${GUI_REPOSITORY}/logs:/root/.npm/_logs
+      - ${GUI_REPOSITORY}/screenshots:/e2e/test-results
+      - ${GUI_REPOSITORY}/tests/e2e_tests/dockerClient:/e2e/dockerClient
+      - ${GUI_REPOSITORY}/tests/e2e_tests/fixtures:/e2e/fixtures
+      - ${GUI_REPOSITORY}/tests/e2e_tests/integration:/e2e/integration
+      - ${GUI_REPOSITORY}/tests/e2e_tests/package.json:/e2e/package.json
+      - ${GUI_REPOSITORY}/tests/e2e_tests/playwright.config.ts:/e2e/playwright.config.ts
+      - ${GUI_REPOSITORY}/tests/e2e_tests/utils:/e2e/utils
+      - ${GUI_REPOSITORY}/videos:/e2e/videos
+
+  client:
+    scale: 1
+    configs:
+      - source: client_json
+        target: /etc/mender/mender.conf
+      - source: client_connect_json
+        target: /etc/mender/mender-connect.conf
+    volumes:
+      - ${GUI_REPOSITORY}/tests/e2e_tests/dockerClient/identity.sh:/usr/share/mender/identity/mender-device-identity
+
+  ##
+  ## to execute or edit the tests locally:
+  ## use playwright locally using `npm install` in the e2e_tests directory and run `npm run test`
+  ##
+  gui:
+    # Provide override variable MENDER_IMAGE_GUI, but fall back on default from dev/docker-compose.yml
+    image: ${MENDER_IMAGE_GUI:-docker.io/mendersoftware/gui:main}
+    environment:
+      - GATEWAY_IP=docker.mender.io
+      - DISABLE_ONBOARDING=true
+      - HAVE_REPORTING=0
+
+  iot-manager:
+    environment:
+      - IOT_MANAGER_DOMAIN_SKIPVERIFY=true

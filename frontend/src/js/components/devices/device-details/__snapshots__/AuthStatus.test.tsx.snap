@@ -1,0 +1,816 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AuthStatus Component > renders correctly 1`] = `
+.emotion-0 {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+  -webkit-transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  fill: currentColor;
+  font-size: 1.5rem;
+}
+
+.emotion-1 {
+  max-width: 100%;
+  font-family: "Roboto","Helvetica","Arial",sans-serif;
+  font-size: 0.8125rem;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  height: 32px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.87);
+  background-color: rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  white-space: nowrap;
+  -webkit-transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  cursor: unset;
+  outline: 0;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  border: 0;
+  padding: 0;
+  vertical-align: middle;
+  box-sizing: border-box;
+  height: 24px;
+  background-color: #1976d2;
+  color: #fff;
+}
+
+.emotion-1.Mui-disabled {
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.emotion-1 .MuiChip-avatar {
+  margin-left: 5px;
+  margin-right: -6px;
+  width: 24px;
+  height: 24px;
+  color: #616161;
+  font-size: 0.75rem;
+}
+
+.emotion-1 .MuiChip-avatarColorPrimary {
+  color: #fff;
+  background-color: #1565c0;
+}
+
+.emotion-1 .MuiChip-avatarColorSecondary {
+  color: #fff;
+  background-color: #7b1fa2;
+}
+
+.emotion-1 .MuiChip-avatarSmall {
+  margin-left: 4px;
+  margin-right: -4px;
+  width: 18px;
+  height: 18px;
+  font-size: 0.625rem;
+}
+
+.emotion-1 .MuiChip-icon {
+  margin-left: 5px;
+  margin-right: -6px;
+}
+
+.emotion-1 .MuiChip-deleteIcon {
+  -webkit-tap-highlight-color: transparent;
+  color: rgba(0, 0, 0, 0.26);
+  font-size: 22px;
+  cursor: pointer;
+  margin: 0 5px 0 -6px;
+}
+
+.emotion-1 .MuiChip-deleteIcon:hover {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.emotion-1 .MuiChip-icon {
+  font-size: 18px;
+  margin-left: 4px;
+  margin-right: -4px;
+}
+
+.emotion-1 .MuiChip-deleteIcon {
+  font-size: 16px;
+  margin-right: 4px;
+  margin-left: -4px;
+}
+
+.emotion-1 .MuiChip-deleteIcon {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.emotion-1 .MuiChip-deleteIcon:hover,
+.emotion-1 .MuiChip-deleteIcon:active {
+  color: #fff;
+}
+
+.emotion-1 .MuiChip-icon {
+  color: #616161;
+}
+
+.emotion-1 .MuiChip-icon {
+  color: inherit;
+}
+
+.emotion-2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 12px;
+  padding-right: 12px;
+  white-space: nowrap;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.emotion-3 {
+  background-color: #03a9f4;
+  margin-bottom: 16px;
+  min-width: 700px;
+  padding: 16px;
+}
+
+.emotion-4:hover svg {
+  color: #1565c0;
+}
+
+.emotion-5 {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+  -webkit-transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  fill: currentColor;
+  font-size: 1.5rem;
+  color: #1976d2;
+}
+
+.emotion-5.read {
+  color: rgba(0, 0, 0, 0.38);
+}
+
+.emotion-6 {
+  position: absolute;
+  top: -5px;
+  bottom: 0;
+  left: -5px;
+  right: -5px;
+  border: 1px dashed #1976d2;
+  border-radius: 50%;
+}
+
+.emotion-6.read {
+  border-color: rgba(0, 0, 0, 0.38);
+}
+
+.emotion-6:hover {
+  border-color: #1565c0;
+}
+
+.emotion-7 .header,
+.emotion-7 .MuiAccordion-root {
+  border-bottom: 1px solid #757575;
+}
+
+.emotion-7 .columnHeader,
+.emotion-7 .MuiAccordionSummary-root,
+.emotion-7 .MuiAccordionSummary-content {
+  cursor: default;
+}
+
+.emotion-7 .header,
+.emotion-7 .body .MuiAccordionSummary-content {
+  display: grid;
+  grid-column-gap: 16px;
+  grid-template-columns: 0.5fr 1fr 2fr 2fr 2fr;
+}
+
+.emotion-8 {
+  padding: 16px;
+}
+
+.emotion-8.columns-4 {
+  grid-template-columns: 0.5fr 1fr 2fr 2fr;
+}
+
+.emotion-9 {
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.87);
+  -webkit-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  box-shadow: var(--Paper-shadow);
+  background-image: var(--Paper-overlay);
+  position: relative;
+  -webkit-transition: margin 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: margin 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  overflow-anchor: none;
+  background-color: #03a9f4;
+}
+
+.emotion-9::before {
+  position: absolute;
+  left: 0;
+  top: -1px;
+  right: 0;
+  height: 1px;
+  content: "";
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.12);
+  -webkit-transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.emotion-9:first-of-type::before {
+  display: none;
+}
+
+.emotion-9.Mui-expanded::before {
+  opacity: 0;
+}
+
+.emotion-9.Mui-expanded:first-of-type {
+  margin-top: 0;
+}
+
+.emotion-9.Mui-expanded:last-of-type {
+  margin-bottom: 0;
+}
+
+.emotion-9.Mui-expanded+.emotion-9.Mui-expanded::before {
+  display: none;
+}
+
+.emotion-9.Mui-disabled {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+.emotion-9.Mui-expanded {
+  margin: 16px 0;
+}
+
+.emotion-9:before {
+  display: none;
+}
+
+.emotion-9$expanded {
+  margin: auto;
+}
+
+.emotion-9 .columns-4 .MuiAccordionSummary-content {
+  grid-template-columns: 0.5fr 1fr 2fr 2fr;
+}
+
+.emotion-9 .MuiAccordionDetails-root {
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+
+.emotion-10 {
+  all: unset;
+}
+
+.emotion-11 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  background-color: transparent;
+  outline: 0;
+  border: 0;
+  margin: 0;
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  vertical-align: middle;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  color: inherit;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  min-height: 48px;
+  padding: 0px 16px;
+  -webkit-transition: min-height 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: min-height 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.emotion-11::-moz-focus-inner {
+  border-style: none;
+}
+
+.emotion-11.Mui-disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+@media print {
+  .emotion-11 {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
+
+.emotion-11.Mui-focusVisible {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+.emotion-11.Mui-disabled {
+  opacity: 0.38;
+}
+
+.emotion-11:hover:not(.Mui-disabled) {
+  cursor: pointer;
+}
+
+.emotion-11.Mui-expanded {
+  min-height: 64px;
+}
+
+.emotion-12 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  text-align: start;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  margin: 12px 0;
+  -webkit-transition: margin 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: margin 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.emotion-12.Mui-expanded {
+  margin: 20px 0;
+}
+
+.emotion-15 {
+  height: 0;
+  overflow: hidden;
+  -webkit-transition: height 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: height 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  visibility: hidden;
+}
+
+.emotion-16 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+}
+
+.emotion-17 {
+  width: 100%;
+}
+
+.emotion-19 {
+  padding: 8px 16px 16px;
+}
+
+.emotion-29 {
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.emotion-30 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  background-color: transparent;
+  outline: 0;
+  border: 0;
+  margin: 0;
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  vertical-align: middle;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  color: inherit;
+  font-family: "Roboto","Helvetica","Arial",sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.75;
+  letter-spacing: 0.02857em;
+  text-transform: uppercase;
+  min-width: 64px;
+  padding: 6px 16px;
+  border: 0;
+  border-radius: 4px;
+  -webkit-transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  padding: 6px 8px;
+  color: var(--variant-textColor);
+  background-color: var(--variant-textBg);
+  --variant-textColor: #9c27b0;
+  --variant-outlinedColor: #9c27b0;
+  --variant-outlinedBorder: rgba(156, 39, 176, 0.5);
+  --variant-containedColor: #fff;
+  --variant-containedBg: #9c27b0;
+  -webkit-transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.emotion-30::-moz-focus-inner {
+  border-style: none;
+}
+
+.emotion-30.Mui-disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+@media print {
+  .emotion-30 {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
+
+.emotion-30:hover {
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.emotion-30.Mui-disabled {
+  color: rgba(0, 0, 0, 0.26);
+}
+
+@media (hover: hover) {
+  .emotion-30:hover {
+    --variant-containedBg: #7b1fa2;
+    --variant-textBg: rgba(156, 39, 176, 0.04);
+    --variant-outlinedBorder: #9c27b0;
+    --variant-outlinedBg: rgba(156, 39, 176, 0.04);
+  }
+}
+
+.emotion-30.MuiButton-loading {
+  color: transparent;
+}
+
+<div
+  class="margin-bottom "
+>
+  <div
+    class="flexbox space-between center-aligned"
+  >
+    <div
+      class="flexbox center-aligned"
+    >
+      <h4>
+        Authentication status
+      </h4>
+      <div
+        class="flexbox center-aligned margin-left margin-right"
+      >
+        <div
+          class="capitalized"
+        >
+          accepted
+        </div>
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium green emotion-0"
+          data-testid="CheckCircleIcon"
+          focusable="false"
+          style="margin: 12px;"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8z"
+          />
+        </svg>
+      </div>
+      <div
+        class="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorPrimary MuiChip-filledPrimary emotion-1"
+      >
+        <span
+          class="MuiChip-label MuiChip-labelSmall emotion-2"
+        >
+          new request
+        </span>
+      </div>
+    </div>
+    <div
+      class="flexbox centered"
+    />
+  </div>
+  <div />
+  <div
+    class="emotion-3"
+  >
+    <div
+      class="margin-bottom-small flexbox space-between"
+    >
+      Authorization sets
+      <div
+        class=""
+        data-mui-internal-clone-element="true"
+      >
+        <div
+          class="relative emotion-4"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-colorPrimary MuiSvgIcon-fontSizeMedium emotion-5"
+            data-testid="HelpIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 17h-2v-2h2zm2.07-7.75-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25"
+            />
+          </svg>
+          <div
+            class="emotion-6 "
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="authsets emotion-7"
+    >
+      <div
+        class="header columns-5 emotion-8"
+      >
+        <div
+          class="columnHeader"
+        />
+        <div
+          class="columnHeader"
+        >
+          Status
+        </div>
+        <div
+          class="columnHeader"
+        >
+          Public key
+        </div>
+        <div
+          class="columnHeader"
+        >
+          Time of request
+        </div>
+        <div
+          class="columnHeader"
+        >
+          Actions
+        </div>
+      </div>
+      <div
+        class="body relative"
+      >
+        <div
+          class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation1 MuiAccordion-root MuiAccordion-gutters emotion-9"
+          style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
+        >
+          <h3
+            class="MuiAccordion-heading emotion-10"
+          >
+            <button
+              aria-expanded="false"
+              class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters columns-5 emotion-11"
+              tabindex="0"
+              type="button"
+            >
+              <span
+                class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters emotion-12"
+              >
+                <div
+                  class="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorPrimary MuiChip-filledPrimary emotion-1"
+                  style="justify-self: flex-start;"
+                >
+                  <span
+                    class="MuiChip-label MuiChip-labelSmall emotion-2"
+                  >
+                    new
+                  </span>
+                </div>
+                <div
+                  class="capitalized"
+                >
+                  pending
+                </div>
+                <a>
+                  show key
+                </a>
+                <time
+                  datetime="2019-01-13T06:25:00+00:00"
+                >
+                  2019-01-13 06:25
+                </time>
+                <div
+                  class="action-buttons flexbox"
+                >
+                  <a>
+                    Accept
+                  </a>
+                  <a>
+                    Reject
+                  </a>
+                  <a>
+                    Dismiss
+                  </a>
+                </div>
+              </span>
+            </button>
+          </h3>
+          <div
+            class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-hidden emotion-15"
+            style="min-height: 0px;"
+          >
+            <div
+              class="MuiCollapse-wrapper MuiCollapse-vertical emotion-16"
+            >
+              <div
+                class="MuiCollapse-wrapperInner MuiCollapse-vertical emotion-17"
+              >
+                <div
+                  class="MuiAccordion-region emotion-18"
+                  role="region"
+                >
+                  <div
+                    class="MuiAccordionDetails-root emotion-19"
+                  >
+                    <div
+                      style="flex-grow: 1;"
+                    />
+                    <p
+                      class="bold expanded"
+                    >
+                       Are you sure you want to continue?
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation1 MuiAccordion-root MuiAccordion-gutters emotion-9"
+          style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
+        >
+          <h3
+            class="MuiAccordion-heading emotion-10"
+          >
+            <button
+              aria-expanded="false"
+              class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters columns-5 emotion-11"
+              tabindex="0"
+              type="button"
+            >
+              <span
+                class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters emotion-12"
+              >
+                <div
+                  class="capitalized"
+                >
+                  Active
+                </div>
+                <div
+                  class="capitalized"
+                >
+                  accepted
+                </div>
+                <a>
+                  show key
+                </a>
+                <time
+                  datetime="2019-01-13T06:25:00+00:00"
+                >
+                  2019-01-13 06:25
+                </time>
+                <div
+                  class="action-buttons flexbox"
+                >
+                  <div>
+                    Accept
+                  </div>
+                  <a>
+                    Reject
+                  </a>
+                  <a>
+                    Dismiss
+                  </a>
+                </div>
+              </span>
+            </button>
+          </h3>
+          <div
+            class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-hidden emotion-15"
+            style="min-height: 0px;"
+          >
+            <div
+              class="MuiCollapse-wrapper MuiCollapse-vertical emotion-16"
+            >
+              <div
+                class="MuiCollapse-wrapperInner MuiCollapse-vertical emotion-17"
+              >
+                <div
+                  class="MuiAccordion-region emotion-18"
+                  role="region"
+                >
+                  <div
+                    class="MuiAccordionDetails-root emotion-19"
+                  >
+                    <div
+                      style="flex-grow: 1;"
+                    />
+                    <p
+                      class="bold expanded"
+                    >
+                       Are you sure you want to continue?
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flexbox emotion-29"
+    >
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textSecondary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorSecondary MuiButton-root MuiButton-text MuiButton-textSecondary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorSecondary emotion-30"
+        tabindex="0"
+        type="button"
+      >
+        Decommission device
+      </button>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,94 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DeploymentStatus Component > renders correctly 1`] = `
+.emotion-0 {
+  -webkit-column-gap: 8px;
+  column-gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 32px);
+}
+
+.emotion-0>div {
+  -webkit-column-gap: 4px;
+  column-gap: 4px;
+}
+
+.emotion-0 .disabled {
+  opacity: 0.1;
+}
+
+<div
+  class="flexbox emotion-0 "
+>
+  <div
+    aria-label="Skipped"
+    class="flexbox centered disabled"
+    data-mui-internal-clone-element="true"
+  >
+    <img
+      src="/src/assets/img/skipped_status.png"
+    />
+    <div
+      class="status"
+    >
+      0
+    </div>
+  </div>
+  <div
+    aria-label="Pending"
+    class="flexbox centered disabled"
+    data-mui-internal-clone-element="true"
+  >
+    <img
+      src="/src/assets/img/pending_status.png"
+    />
+    <div
+      class="status"
+    >
+      0
+    </div>
+  </div>
+  <div
+    aria-label="In progress"
+    class="flexbox centered disabled"
+    data-mui-internal-clone-element="true"
+  >
+    <img
+      src="/src/assets/img/progress_status.png"
+    />
+    <div
+      class="status"
+    >
+      0
+    </div>
+  </div>
+  <div
+    aria-label="Successful"
+    class="flexbox centered disabled"
+    data-mui-internal-clone-element="true"
+  >
+    <img
+      src="/src/assets/img/success_status.png"
+    />
+    <div
+      class="status"
+    >
+      0
+    </div>
+  </div>
+  <div
+    aria-label="Failed"
+    class="flexbox centered disabled"
+    data-mui-internal-clone-element="true"
+  >
+    <img
+      src="/src/assets/img/error_status.png"
+    />
+    <div
+      class="status"
+    >
+      0
+    </div>
+  </div>
+</div>
+`;
