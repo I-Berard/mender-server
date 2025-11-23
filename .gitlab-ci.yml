@@ -1,0 +1,935 @@
+variables:
+  # NOTE: Custom variables should never start with CI_ prefix.
+  #       This namespace belongs to Gitlab CI/CD.
+  #       https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+  ALPINE_VERSION:
+    value: "3.21"
+    description: "Version of Alpine to use in jobs"
+  DOCKER_VERSION:
+    value: "27.3"
+    description: "Version of docker to use in pipelines"
+  DOCKER_BUILDKITARGS:
+    value: '--driver-opt "image=moby/buildkit:v0.17.3"' # QA-823
+    description: "Optional buildkit args for docker build"
+  DOCKER_HOST:
+    value: 'tcp://docker:2376'
+    description: "Required to run dind inside k8s runners with TLS"
+  DOCKER_TLS_CERTDIR:
+    value: '/certs'
+    description: "The cert dir inside the gitlab runner. Don't change this."
+  DOCKER_TLS_VERIFY:
+    value: 1
+    description: "Enable TLS verification for docker in dind"
+  DOCKER_CERT_PATH:
+    value: "$DOCKER_TLS_CERTDIR/client"
+    description: "Used for docker entrypoints. See https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4125"
+  SKOPEO_VERSION:
+    value: "v1.16.1"
+    description: "Version of skopeo to use for publishing images"
+  GOLANG_VERSION:
+    value: "1.24.2"
+    description: "Version of Golang to use in jobs"
+  MONGO_VERSION:
+    value: "8.0"
+    description: "Version of MongoDB to use in jobs"
+  IMAGE_GOLANGCI_VERSION:
+    value: "v2.4.0"
+    description: "Version of image golangci/golangci-lint for static checks"
+  DOCKER_PLATFORM:
+    value: "linux/amd64,linux/arm64"
+    description: "Platforms to build container images"
+  FF_TIMESTAMPS: true
+
+  RULES_CHANGES_COMPARE_TO_REF:
+    value: "refs/heads/main"
+    description: "Which reference to compare rules about changes (usually set by push option)"
+
+  # Defines the docker tags of built artifacts objects
+  MENDER_IMAGE_REGISTRY: "${CI_REGISTRY}"
+  MENDER_IMAGE_REPOSITORY: "northern.tech/mender/${CI_PROJECT_NAME}"
+  MENDER_IMAGE_TAG: "build-${CI_COMMIT_SHA}"
+  MENDER_IMAGE_TAG_TEST: "test-${CI_COMMIT_SHA}"
+  MENDER_IMAGE_TAG_BUILDER: "builder-${CI_COMMIT_SHA}"
+
+  GOCOVERDIR: "${CI_PROJECT_DIR}/backend/tests/cover"
+
+  # release and changelog generators
+  GITHUB_REPO_URL:
+    description: "The Github Repo URL for release-please, in the format of 'owner/repo'"
+    value: "mendersoftware/mender-server"
+  GITHUB_USER_NAME:
+    description: "The Github username for release-please"
+    value: "mender-test-bot"
+  GITHUB_USER_EMAIL:
+    description: "The Github user email for release-please"
+    value: "mender@northern.tech"
+  GIT_CLIFF:
+    description: "Run git cliff to override the release-please changelog"
+    value: "true"
+    options:
+      - "true"
+      - "false"
+  GITHUB_CHANGELOG_REPO_URL:
+    description: "The Github Repo URL where to push the changelog"
+    value: "mendersoftware/mender-docs-changelog"
+  CHANGELOG_REMOTE_FILE:
+    description: "The changelog file in the remote changelog repo"
+    value: "10.Mender-Server/docs.md"
+
+  # Helm version bump
+  HELM_MENDER_PUBLISH_REGISTRY:
+    description: "The registry where to push images"
+    value: "docker.io"
+  HELM_MENDER_PUBLISH_REPOSITORY:
+    description: "The repositorywhere to push images"
+    value: "mendersoftware"
+
+  # Publish licenses
+  GITHUB_DOCS_REPO_URL:
+    description: "The Github Repo URL where to push the documentation"
+    value: "mendersoftware/mender-docs"
+  LICENSE_REMOTE_FILE:
+    description: "The changelog file in the remote changelog repo"
+    value: "302.Release-information/03.Open-source-licenses/01.Mender-Server/docs.md"
+
+include:
+  - component: "gitlab.com/Northern.tech/Mender/mendertesting/commit-lint@master"
+  - project: "Northern.tech/Mender/mendertesting"
+    file:
+      - ".gitlab-ci-github-status-updates.yml"
+      # QA-1046 Remove after hardening sign-off checks in the modern commit linter
+      - ".gitlab-ci-check-commits-signoffs.yml"
+  - local: "/frontend/pipeline.yml"
+  - local: "/.gitlab/merge-enterprise.yml"
+    rules:
+      - if: '$CI_PROJECT_NAME == "mender-server"'
+        when: always
+      - when: never
+  - project: "Northern.tech/Mender/mendertesting"
+    file: "qa-common/send-results-to-mantra.yml"
+    ref: "master"
+
+stages:
+  - lint
+  - build
+  - test
+  - publish
+  - changelog
+  - deploy-staging
+
+default:
+  tags:
+    - k8s
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+.requires-docker: &requires-docker
+  - DOCKER_RETRY_SLEEP_S=10 # wait longer for k8s workers
+  - DOCKER_RUNNING=false
+  - for try in 4 3 2 1; do
+  -  docker ps && DOCKER_RUNNING=true
+  -  if [ "${DOCKER_RUNNING}" == "true" ]; then
+  -   echo "DEBUG - docker is running - continue"
+  -   break
+  -  fi
+  -  sleep "${DOCKER_RETRY_SLEEP_S}"
+  - done
+  - if [ "${DOCKER_RUNNING}" != "true" ]; then
+  -  echo "DEBUG - docker is not running - exiting"
+  -  exit 192
+  - fi
+
+.dind-login: &dind-login
+  - mkdir -p $HOME/.docker && echo $DOCKER_AUTH_CONFIG > $HOME/.docker/config.json
+  - docker login --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+.build:base:
+  before_script:
+    - *requires-docker
+  retry:
+    max: 2
+    exit_codes:
+      - 2
+      - 137
+      - 192
+
+.template:build:docker:
+  stage: build
+  extends: .build:base
+  needs: []
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker:${DOCKER_VERSION}-cli
+  services:
+    - name: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker:${DOCKER_VERSION}-dind
+      alias: docker
+  variables:
+    DOCKER_BUILDARGS: "--push"
+  before_script:
+    - *requires-docker
+    - apk add make bash git
+    - *dind-login
+    # NOTE: If we're running on a PR, do not build multiplatform
+    - test "$CI_COMMIT_REF_PROTECTED" != "true" && unset DOCKER_PLATFORM
+    - if test -n "${DOCKER_PLATFORM}"; then
+      docker context create ci;
+      docker builder create ${DOCKER_BUILDKITARGS} --name ci-builder ci;
+      export DOCKER_BUILDARGS="${DOCKER_BUILDARGS} --builder=ci-builder";
+      fi
+
+build:backend:docker:
+  extends: .template:build:docker
+  rules:
+    - changes:
+        paths: ["backend/**/*", ".gitlab-ci.yml"]
+        compare_to: "${RULES_CHANGES_COMPARE_TO_REF}"
+      when: always
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: always
+  script:
+    # FIXME: Only exporting deployments build stage to run unit tests
+    #        We're assuming the images have consistent GOTOOLCHAIN.
+    #        Will be fixed once we optimize to template based pipeline.
+    - |-
+      make -C backend/services/deployments docker \
+        DOCKER_BUILDARGS="${DOCKER_BUILDARGS} --target builder" \
+        MENDER_IMAGE_TAG=${MENDER_IMAGE_TAG_BUILDER}
+    - make -C backend docker
+
+build:backend:docker-acceptance:
+  extends: build:backend:docker
+  before_script:
+    - *requires-docker
+    - apk add make bash git
+    - *dind-login
+    # We're only building acceptance test images for CI runner platform.
+    - unset DOCKER_PLATFORM
+  script:
+    # NOTE: Only build for test platform (default) for the acceptance test images
+    - make -C backend docker-acceptance
+
+test:backend:static:
+  stage: test
+  needs: []
+  rules:
+    - changes:
+        paths: ["backend/**/*.go", "backend/go.mod", ".gitlab-ci.yml"]
+        compare_to: "${RULES_CHANGES_COMPARE_TO_REF}"
+  image: "golangci/golangci-lint:${IMAGE_GOLANGCI_VERSION}"
+  script:
+    - cd backend
+    - golangci-lint run -v
+
+.template:combine-api:
+  stage: test
+  needs: []
+  rules:
+    - changes:
+        paths: ["backend/docs/api/*.yaml", "backend/docs/api/**/*.yaml"]
+        compare_to: "${RULES_CHANGES_COMPARE_TO_REF}"
+      when: on_success
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/node
+  before_script:
+    - npm install -g @redocly/cli@2.2.2
+    - cd backend/docs/api
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - backend/docs/api/
+
+test:backend:combine-api:
+  extends: .template:combine-api
+  script:
+    - |
+      redocly join --prefix-tags-with-info-prop title \
+        root.openapi.yaml \
+        common/*.yaml \
+        deployments/*.yaml \
+        deviceauth/*.yaml \
+        deviceconfig/*.yaml \
+        deviceconnect/*.yaml \
+        inventory/*.yaml \
+        iot-manager/*.yaml \
+        useradm/*.yaml \
+        workflows/*.yaml \
+        -o dist/openapi.tmp.yaml
+    - redocly bundle dist/openapi.tmp.yaml --config config/redocly.yaml -o dist/openapi.yaml
+    - git diff --exit-code dist/openapi.yaml
+  allow_failure: false
+
+test:backend:validate-open-api:
+  stage: test
+  needs: []
+  rules:
+    - changes:
+        paths:
+          [
+            "backend/**/docs/*.yml",
+            "backend/docs/api/*.yaml",
+            "backend/docs/api/**/*.yaml",
+            ".gitlab-ci.yml",
+          ]
+        compare_to: "${RULES_CHANGES_COMPARE_TO_REF}"
+      when: on_success
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: on_success
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/alpine:${ALPINE_VERSION}
+  before_script:
+    - apk add --no-cache curl
+    - curl -L https://raw.githubusercontent.com/stoplightio/spectral/master/scripts/install.sh -o install.sh
+    - sh install.sh
+  script:
+    - |
+      cat > .spectral.yaml << EOF
+      extends: [['spectral:oas', all]]
+      parserOptions:
+        incompatibleValues: 1
+      EOF
+    - spectral lint -v -D -f text backend/services/**/docs/*.yml backend/docs/api/*.yaml backend/docs/api/**/*.yaml
+    - spectral lint -v -D -f junit -o spectral-report.xml backend/services/**/docs/*.yml backend/docs/api/*.yaml backend/docs/api/**/*.yaml
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    reports:
+      junit: $CI_PROJECT_DIR/spectral-report.xml
+
+test:backend:unit:
+  # FIXME: Using deployments build stage since we're running all tests
+  image: "${CI_REGISTRY_IMAGE}/deployments:${MENDER_IMAGE_TAG_BUILDER}"
+  stage: test
+  needs:
+    - job: build:backend:docker
+      artifacts: false
+  resource_group: test_backend_unit
+  rules:
+    - changes:
+        paths: ["backend/**/*.go", "backend/go.mod", ".gitlab-ci.yml"]
+        compare_to: "${RULES_CHANGES_COMPARE_TO_REF}"
+      when: on_success
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: on_success
+  services:
+    - name: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/mongo:${MONGO_VERSION}
+      alias: mongo
+  variables:
+    TEST_MONGO_URL: "mongodb://mongo"
+    WORKFLOWS_MONGO_URL: "mongodb://mongo"
+  before_script:
+    - mkdir -p $GOCOVERDIR
+  script:
+    - |
+      make -C backend test-unit \
+        TESTFLAGS="-cover -coverprofile=${GOCOVERDIR}/\$(COMPONENT)-unit.cover"
+  artifacts:
+    expire_in: 1w
+    when: on_success
+    paths:
+      - ${GOCOVERDIR}/*-unit.cover
+
+test:backend:acceptance:
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker:${DOCKER_VERSION}-cli
+  extends: .build:base
+  stage: test
+  rules:
+    - changes:
+        paths: ["backend/**/*", ".gitlab-ci.yml"]
+        compare_to: "${RULES_CHANGES_COMPARE_TO_REF}"
+      when: on_success
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: on_success
+  services:
+    - name: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker:${DOCKER_VERSION}-dind
+      alias: docker
+  needs:
+    - job: build:backend:docker
+      artifacts: false
+    - job: build:backend:docker-acceptance
+      artifacts: false
+  before_script:
+    - *requires-docker
+    - apk add make bash git
+    - *dind-login
+    - make -C backend -j 4 docker-pull
+    - make -C backend -j 4 docker-pull MENDER_IMAGE_TAG=${MENDER_IMAGE_TAG_TEST}
+    - mkdir -p $GOCOVERDIR
+  script:
+    # NOTE: Setting GOCOVERDIR this way will group the coverage report per
+    #       service (using make variable: COMPONENT).
+    - make -C backend test-acceptance GOCOVERDIR="${GOCOVERDIR}/\$(COMPONENT)-acceptance"
+  artifacts:
+    expire_in: 1w
+    when: on_success
+    paths:
+      - ${GOCOVERDIR}/*-acceptance
+
+test:backend:integration:
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker:${DOCKER_VERSION}-cli
+  stage: test
+  extends: .build:base
+  rules:
+    - changes:
+        paths: ["backend/**/*", ".gitlab-ci.yml"]
+        compare_to: "${RULES_CHANGES_COMPARE_TO_REF}"
+      when: on_success
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: on_success
+  services:
+    - name: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker:${DOCKER_VERSION}-dind
+      alias: docker
+      variables:
+        HEALTHCHECK_TCP_PORT: "2376"
+  needs:
+    - job: build:backend:docker
+      artifacts: false
+    - job: build:backend:docker-acceptance
+      artifacts: false
+  variables:
+    MANTRA_PROJECT_NAME: "backend_integration_open_source"
+  before_script:
+    - *requires-docker
+    - apk add make bash git curl jq
+    - *dind-login
+    - mkdir -p ${GOCOVERDIR}/integration
+    - make -C backend -j 4 docker-pull MENDER_IMAGE_TAG=$MENDER_IMAGE_TAG_TEST
+  script:
+    - make -C backend test-integration
+      GOCOVERDIR=${GOCOVERDIR}/integration
+      MENDER_IMAGE_TAG=$MENDER_IMAGE_TAG_TEST
+  after_script:
+    - !reference [.mantra-push-results]
+  artifacts:
+    expire_in: 1w
+    when: always
+    paths:
+      - ${GOCOVERDIR}/integration
+      - backend/tests/integration/tests/logs.*
+      - backend/tests/integration/tests/results_integration_*.xml
+      - backend/tests/integration/tests/report_integration_*.html
+    reports:
+      junit: backend/tests/integration/tests/results_integration_*.xml
+
+test:integration:
+  stage: test
+  needs:
+    - job: build:backend:docker
+      artifacts: false
+    - job: build:frontend:docker
+      artifacts: false
+  rules:
+    - if: $CI_COMMIT_REF_PROTECTED == "true"
+      when: manual
+      allow_failure: true
+  variables:
+    # NOTE: Cannot use indirect values based off CI_* since these will be
+    #       expanded in the downstream project context.
+    MENDER_SERVER_REGISTRY: "${CI_REGISTRY}"
+    MENDER_SERVER_REPOSITORY: "northern.tech/mender/${CI_PROJECT_NAME}"
+    MENDER_SERVER_TAG: "build-${CI_COMMIT_SHA}"
+    PYTEST_ADDOPTS: "-k 'not Enterprise'"
+    RUN_TESTS_FULL_INTEGRATION: "true"
+  trigger:
+    project: "Northern.tech/Mender/integration"
+
+test:prep:
+  stage: test
+  extends: .build:base
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: on_success
+  services:
+    - name: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker:${DOCKER_VERSION}-dind
+      alias: docker
+  script:
+    - docker run --rm --entrypoint "/bin/sh" -v $(pwd):/extract mendersoftware/mender-stress-test-client:master -c "cp mender-stress-test-client /extract/"
+  artifacts:
+    paths:
+      - mender-stress-test-client
+    expire_in: 2w
+  tags:
+    - hetzner-amd-beefy
+
+.template:test:staging-deployment:
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/mendersoftware/mender-test-containers:gui-e2e-testing
+  stage: .post
+  services:
+    - name: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker:${DOCKER_VERSION}-dind
+      alias: docker
+  rules:
+    - when: never
+  resource_group: test_staging_e2e
+  needs:
+    - job: test:prep
+      artifacts: true
+    - job: mender-helm-version-bump:staging
+  variables:
+    CI: 1
+    DEVICE_TYPE: qemux86-64
+    DOCKER_CERT_PATH: /certs/client
+  before_script:
+    - mv mender-stress-test-client frontend/tests/e2e_tests/
+    - cd frontend/tests/e2e_tests
+    - curl -fsSL https://get.docker.com | sh
+    - docker pull mendersoftware/mender-client-docker-addons:mender-master
+    - npm ci --cache .npm --prefer-offline
+  script:
+    - npm run test
+  artifacts:
+    expire_in: 2w
+    paths:
+      - frontend/tests/e2e_tests/test-results
+      - frontend/tests/e2e_tests/traces
+    when: always
+  tags:
+    - hetzner-amd-beefy-privileged
+  allow_failure:
+    exit_codes: 464
+
+test:staging-deployment:chrome:
+  extends: .template:test:staging-deployment
+  script:
+    - npx playwright install chromium
+    - npm run script -- --environment=staging --project=chromium
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+
+test:staging-deployment:firefox:
+  extends: .template:test:staging-deployment
+  script:
+    - npx playwright install firefox
+    - npm run script -- --environment=staging --project=firefox
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: delayed
+      start_in: 10 minutes
+
+publish:backend:coverage:
+  stage: publish
+  extends: coveralls:done
+  needs:
+    - job: test:backend:unit
+      artifacts: true
+      optional: true
+    - job: test:backend:acceptance
+      artifacts: true
+      optional: true
+    - job: test:backend:integration
+      artifacts: true
+      optional: true
+  rules:
+    - changes:
+        paths: ["backend/**/*"]
+        compare_to: "${RULES_CHANGES_COMPARE_TO_REF}"
+      when: on_success
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: on_success
+  allow_failure: true # QA-925 - Coveralls servers are unreliable.
+  script:
+    - for coverpath in $(find ${GOCOVERDIR} -type f -name '*.cover'); do
+      coverfile=$(basename "$coverpath");
+      coveralls report -n --parallel --job-flag="${coverfile%.cover}" --format=golang "$coverpath";
+      done
+
+publish:backend:docker:
+  stage: publish
+  image:
+    name: quay.io/skopeo/stable:${SKOPEO_VERSION}
+    # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#override-the-entrypoint-of-an-image
+    entrypoint: [""]
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: on_success
+    - when: never
+  before_script:
+    - skopeo login --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - skopeo login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD docker.io
+    - dnf install -y make git-core
+    - export MENDER_PUBLISH_TAG="${CI_COMMIT_REF_NAME}"
+  script:
+    - make -C backend -j 4 docker-publish NOASK=y \
+      SKOPEO_ARGS='--digestfile '''${CI_PROJECT_DIR}'''/.digests/$(COMPONENT)'
+    - |
+      if echo -n "${MENDER_PUBLISH_TAG}" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+         make -C backend -j 4 docker-publish NOASK=y \
+            MENDER_PUBLISH_TAG=$(echo -n $MENDER_PUBLISH_TAG | cut -d . -f-2) # vX.Y
+         make -C backend -j 4 docker-publish NOASK=y \
+            MENDER_PUBLISH_TAG=$(echo -n $MENDER_PUBLISH_TAG | cut -d . -f-1) # vX
+
+        # Check if we need to update latest
+        MAJOR_VERSION=$(echo $MENDER_PUBLISH_TAG | cut -d . -f1 | tr -d -c '[:digit:]')
+        MINOR_VERSION=$(echo $MENDER_PUBLISH_TAG | cut -d . -f2 | tr -d -c '[:digit:]')
+        PATCH_VERSION=$(echo $MENDER_PUBLISH_TAG | cut -d . -f3 | tr -d -c '[:digit:]')
+        for service in $(find backend/services -maxdepth 1 -mindepth 1 -type d -exec basename {} \;); do
+          NEXT_PATCH="${MENDER_PUBLISH_IMAGE}/${service}:v${MAJOR_VERSION}.${MINOR_VERSION}.$(expr $PATCH_VERSION + 1)"
+          NEXT_MINOR="${MENDER_PUBLISH_IMAGE}/${service}:v${MAJOR_VERSION}.$(expr $MINOR_VERSION + 1)"
+          NEXT_MAJOR="${MENDER_PUBLISH_IMAGE}/${service}:v$(expr $MAJOR_VERSION + 1)"
+          if skopeo inspect "docker://$NEXT_PATCH" 1>/dev/null 2>&1; then
+            echo "Next image '$NEXT_PATCH' exists: not updating 'latest' reference"
+          elif skopeo inspect "docker://$NEXT_MINOR" 1>/dev/null 2>&1; then
+            echo "Next image '$NEXT_MINOR' exists: not updating 'latest' reference"
+          elif skopeo inspect "docker://$NEXT_MAJOR" 1>/dev/null 2>&1; then
+            echo "Next image '$NEXT_MAJOR' exists: not updating 'latest' reference"
+          else
+            echo "Updating 'latest' reference: ${MENDER_PUBLISH_IMAGE}/${service}:latest"
+            make -C backend -j 4 "${service}-docker-publish" NOASK=y \
+               MENDER_PUBLISH_TAG=latest
+          fi
+        done
+      fi
+  artifacts:
+    when: on_success
+    expire_in: 1w
+    paths:
+      - .digests
+
+publish:backend:licenses:
+  stage: publish
+  rules:
+    - changes:
+        paths: ["backend/**/*"]
+        compare_to: "${RULES_CHANGES_COMPARE_TO_REF}"
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: on_success
+  image: golang:${GOLANG_VERSION}
+  variables:
+    GOFLAGS: -tags=nopkcs11
+  before_script:
+    - go install github.com/google/go-licenses@v1.6.0
+  script:
+    - cd backend
+    - go-licenses check
+      --disallowed_types=forbidden,restricted,unknown
+      --ignore=github.com/mendersoftware/mender-server
+      $(go list -f '{{ if eq .Name "main" }}{{println .Dir }}{{end}}' ./services/...)
+    - go-licenses report
+      --template=./tests/go-licenses.gotpl
+      --ignore=github.com/mendersoftware/mender-server
+      $(go list -f '{{ if eq .Name "main" }}{{println .Dir }}{{end}}' ./services/...) > licenses.md
+  artifacts:
+    when: on_success
+    expire_in: "1w"
+    paths:
+      - backend/licenses.md
+
+publish:licenses:docs-site:
+  stage: .post
+  rules:
+    # Only make available for stable branches
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+      allow_failure: true
+  image: "registry.gitlab.com/northern.tech/mender/mender-test-containers:release-please-v1-master"
+  needs:
+    - job: publish:backend:licenses
+      artifacts: true
+    - job: publish:frontend:licenses
+      artifacts: true
+  before_script:
+    # Setting up git
+    - git config --global user.email "${GITHUB_USER_EMAIL}"
+    - git config --global user.name "${GITHUB_USER_NAME}"
+    # GITHUB_TOKEN for Github cli authentication
+    - export GITHUB_TOKEN=${GITHUB_CLI_TOKEN}
+  script:
+    - git clone https://${GITHUB_USER_NAME}:${GITHUB_BOT_TOKEN_REPO_FULL}@github.com/${GITHUB_DOCS_REPO_URL}
+    - cd ${GITHUB_DOCS_REPO_URL#*/}
+    - git checkout -b licenses-${CI_JOB_ID}
+    - cat ../.licenses_header.md > ${LICENSE_REMOTE_FILE}
+    - cat ../backend/licenses.md >> ${LICENSE_REMOTE_FILE}
+    - cat ../frontend/licenses.md >> ${LICENSE_REMOTE_FILE}
+    - git add ${LICENSE_REMOTE_FILE}
+    - |
+      git commit -s -m "chore: add mender-server open source licenses"
+    - git push origin licenses-${CI_JOB_ID}
+    - gh pr create --title "${CI_COMMIT_TAG} Release - update Mender Server licenses" --body "Automated change to the Mender Server Licenses during ${CI_COMMIT_TAG} release" --base master --head licenses-${CI_JOB_ID}
+  after_script:
+    - git remote remove licenses-${CI_JOB_ID}
+
+coveralls:done:
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/alpine:${ALPINE_VERSION}
+  stage: .post
+  allow_failure: true # QA-925 - Coveralls servers are unreliable.
+  before_script:
+    - apk add git
+    - wget https://github.com/coverallsapp/coverage-reporter/releases/latest/download/coveralls-linux-$(uname -m).tar.gz
+    - wget https://github.com/coverallsapp/coverage-reporter/releases/latest/download/coveralls-checksums.txt -O- | grep "coveralls-linux-$(uname -m).tar.gz" | sha256sum -c
+    - mkdir -p $HOME/bin
+    - tar -xzvf ./coveralls-linux-$(uname -m).tar.gz -C $HOME/bin
+    - export PATH="$PATH:$HOME/bin"
+    - if test "${CI_COMMIT_BRANCH#pr_}" != "$CI_COMMIT_BRANCH"; then
+      export CI_MERGE_REQUEST_IID="${CI_COMMIT_BRANCH#pr_}";
+      fi
+  script:
+    - coveralls done -n
+  tags:
+    - hetzner-amd-beefy
+
+changelog:
+  image: "registry.gitlab.com/northern.tech/mender/mender-test-containers:release-please-v1-master"
+  stage: changelog
+  variables:
+    GIT_DEPTH: 0 # Always get the full history
+    GIT_STRATEGY: clone # Always get the full history
+
+    # TODO: Remove git cliff config override once 4.0.0 is released
+    GIT_CLIFF__GIT__SKIP_TAGS: ""
+  tags:
+    - hetzner-amd-beefy
+  rules:
+    # Only run for protected branches (main and maintenance branches)
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+      when: never
+      # QA-1073: Trigger main release candidates manually for open source
+    - if: $CI_PROJECT_NAME == "mender-server" && $CI_COMMIT_BRANCH == "main"
+      when: manual
+      allow_failure: true
+    - if: $CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_BRANCH != ""
+  before_script:
+    # Setting up git
+    - git config --global user.email "${GITHUB_USER_EMAIL}"
+    - git config --global user.name "${GITHUB_USER_NAME}"
+    # GITHUB_TOKEN for Github cli authentication
+    - export GITHUB_TOKEN=${GITHUB_CLI_TOKEN}
+  script:
+    - release-please release-pr
+      --token=${GITHUB_BOT_TOKEN_REPO_FULL}
+      --repo-url=${GITHUB_REPO_URL}
+      --target-branch=${CI_COMMIT_REF_NAME} || echo "INFO - release already exists" # workaround because we shifted to prerelease versioning strategy and there's already a PR open
+    # git cliff: override the changelog
+    - test $GIT_CLIFF == "false" && echo "INFO - Skipping git-cliff" && exit 0
+    - git remote add github-${CI_JOB_ID} https://${GITHUB_USER_NAME}:${GITHUB_BOT_TOKEN_REPO_FULL}@github.com/${GITHUB_REPO_URL} || true # Ignore already existing remote
+    - gh repo set-default https://${GITHUB_USER_NAME}:${GITHUB_BOT_TOKEN_REPO_FULL}@github.com/${GITHUB_REPO_URL}
+    - RELEASE_PLEASE_PR=$(gh pr list --author "${GITHUB_USER_NAME}" --head "release-please--branches--${CI_COMMIT_REF_NAME}" --json number | jq -r '.[0].number // empty')
+    - test -z "$RELEASE_PLEASE_PR" && echo "No release-please PR found" && exit 0
+    - for filename in $(ls CHANGELOG*.md); do cp "${filename}" "${filename}.${CI_COMMIT_SHA}"; done
+    - gh pr checkout --force $RELEASE_PLEASE_PR
+    - for filename in $(ls CHANGELOG*.md.${CI_COMMIT_SHA}); do mv "${filename}" "${filename%.${CI_COMMIT_SHA}}"; done
+    - wget --output-document cliff.toml https://raw.githubusercontent.com/mendersoftware/mendertesting/master/utils/cliff.toml
+    - RELEASE_VERSION="$(jq -r '.["."]' .release-please-manifest.json)"
+    - |
+      case $RELEASE_VERSION in
+        *saas*)
+          if [[ "$CI_PROJECT_NAME" == "mender-server-enterprise" ]]; then
+            ./.gitlab/generate_changelog.sh "${RELEASE_VERSION}" "-saas" "${GITHUB_REPO_URL}" "${CI_COMMIT_REF_NAME}"
+          else
+            echo "INFO - Skipping changelog generation for saas release"
+            git add CHANGELOG.md  # restore the original CHANGELOG.md after release-please
+          fi
+          ;;
+        *)
+          if [[ "$CI_PROJECT_NAME" == "mender-server-enterprise" ]]; then
+            ./.gitlab/generate_changelog.sh "${RELEASE_VERSION}" "-enterprise" "${GITHUB_REPO_URL}" "${CI_COMMIT_REF_NAME}"
+            ./.gitlab/generate_changelog.sh "${RELEASE_VERSION}" "-saas" "${GITHUB_REPO_URL}" "${CI_COMMIT_REF_NAME}"
+          else
+            ./.gitlab/generate_changelog.sh "${RELEASE_VERSION}" "" "${GITHUB_REPO_URL}" "${CI_COMMIT_REF_NAME}"
+          fi
+          ;;
+      esac
+    - git commit --amend -s --no-edit
+    - git push github-${CI_JOB_ID} --force
+    # Update the PR body
+    - git cliff --unreleased --bump -o tmp_pr_body.md --github-repo ${GITHUB_REPO_URL} --use-branch-tags
+    - gh pr edit $RELEASE_PLEASE_PR --body-file tmp_pr_body.md
+    - rm tmp_pr_body.md
+  after_script:
+    - git remote remove github-${CI_JOB_ID}
+
+release:github:
+  image: "registry.gitlab.com/northern.tech/mender/mender-test-containers:release-please-v1-master"
+  stage: .post
+  tags:
+    - hetzner-amd-beefy
+  rules:
+    # Only make available for protected branches (main and maintenance branches)
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+      when: never
+    - if: $CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_BRANCH != ""
+      when: manual
+      allow_failure: true
+  needs:
+    - job: changelog
+  script:
+    - release-please github-release
+      --token=${GITHUB_BOT_TOKEN_REPO_FULL}
+      --repo-url=${GITHUB_REPO_URL}
+      --target-branch=${CI_COMMIT_REF_NAME}
+
+release:mender-docs-changelog:
+  image: "registry.gitlab.com/northern.tech/mender/mender-test-containers:release-please-v1-master"
+  stage: .post
+  tags:
+    - hetzner-amd-beefy
+  rules:
+    # Only make available for stable branches
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+      allow_failure: true
+  before_script:
+    # Setting up git
+    - git config --global user.email "${GITHUB_USER_EMAIL}"
+    - git config --global user.name "${GITHUB_USER_NAME}"
+    # GITHUB_TOKEN for Github cli authentication
+    - export GITHUB_TOKEN=${GITHUB_CLI_TOKEN}
+    - if [[ "${CI_PROJECT_NAME}" == "mender-server-enterprise" ]]; then
+      export CHANGELOG_SUFFIX="-enterprise";
+      else
+      export CHANGELOG_SUFFIX="";
+      fi;
+    - wget --output-document cliff.toml https://raw.githubusercontent.com/mendersoftware/mendertesting/master/utils/cliff.toml
+  script:
+    # Generate the change for this release only
+    - git cliff --use-branch-tags --current --output this_mender_docs_changelog.md
+    - git clone https://${GITHUB_USER_NAME}:${GITHUB_BOT_TOKEN_REPO_FULL}@github.com/${GITHUB_CHANGELOG_REPO_URL}
+    - cd ${GITHUB_CHANGELOG_REPO_URL#*/}
+    - git checkout -b changelog-${CI_JOB_ID}
+    # Backup the Changelog file and remove the header
+    - tail -n +9 ${CHANGELOG_REMOTE_FILE} > ${CHANGELOG_REMOTE_FILE}.${CI_JOB_ID}
+    - sed -i -E "s/^---$//" ${CHANGELOG_REMOTE_FILE}.${CI_JOB_ID}
+    - cat ../.docs_header.md > ${CHANGELOG_REMOTE_FILE}
+    - cat ../this_mender_docs_changelog.md | grep -v -E '^---' >> ${CHANGELOG_REMOTE_FILE}
+    - cat ${CHANGELOG_REMOTE_FILE}.${CI_JOB_ID} >> ${CHANGELOG_REMOTE_FILE}
+    - git add ${CHANGELOG_REMOTE_FILE}
+    - |
+      git commit -s -m "chore: add $CI_PROJECT_NAME changelog"
+    - git push origin changelog-${CI_JOB_ID}
+    - gh pr create --title "Update CHANGELOG${CHANGELOG_SUFFIX}.md for $CI_PROJECT_NAME" --body "Automated change to the CHANGELOG${CHANGELOG_SUFFIX}.md file" --base master --head changelog-${CI_JOB_ID}
+
+release:mender-docs-changelog:saas:
+  extends: release:mender-docs-changelog
+  variables:
+    CHANGELOG_REMOTE_FILE: "12.Hosted-Mender/docs.md"
+  rules:
+    - if: '$CI_PROJECT_NAME == "mender-server"'
+      when: never
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+(?:-saas\.*\d*)?$/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^\d+\.\d+\.x$/' # Disabled on Maintenance branches
+      when: never
+  before_script:
+    # Setting up git
+    - git config --global user.email "${GITHUB_USER_EMAIL}"
+    - git config --global user.name "${GITHUB_USER_NAME}"
+    # GITHUB_TOKEN for Github cli authentication
+    - export GITHUB_TOKEN=${GITHUB_CLI_TOKEN}
+    - export CHANGELOG_SUFFIX="-saas"
+    - cp .docs_header_saas.md .docs_header.md
+    - wget --output-document cliff.toml https://raw.githubusercontent.com/mendersoftware/mendertesting/master/utils/cliff.toml
+
+#
+# Helm version bump
+#
+.helm-version-bump:
+  needs:
+    - job: publish:backend:docker
+      artifacts: true
+    - job: publish:frontend:docker
+      artifacts: true
+  rules:
+    - if: $CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_REF_NAME == "main"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ "/^v\d+\.\d+\.\d+(?:-rc(?:[\.\d]*))*$/"
+      when: on_success
+    - if: '$CI_COMMIT_REF_NAME =~ /^\d+\.\d+\.x$/' # Disabled on Maintenance branches
+      when: never
+  allow_failure: true
+  tags:
+    - hetzner-amd-beefy
+  image: registry.gitlab.com/northern.tech/mender/mender-test-containers:aws-k8s-v1-master
+  variables:
+    HELM_PATCH_VERSION: ${CI_PIPELINE_ID}
+  before_script:
+    - git config --global user.email "${GITHUB_USER_EMAIL}"
+    - git config --global user.name "${GITHUB_USER_NAME}"
+    - export DIGESTS_FOLDER=$(pwd)/.digests
+    - export PROJECT_FOLDER=$(pwd)
+  script:
+    - git clone https://${GITHUB_USER_NAME}:${GITHUB_BOT_TOKEN_REPO_FULL}@github.com/${GITHUB_HELM_REPO} /tmp/helm
+    - cd /tmp/helm
+    - git remote add github-${CI_JOB_ID} https://${GITHUB_USER_NAME}:${GITHUB_BOT_TOKEN_REPO_FULL}@github.com/${GITHUB_HELM_REPO}
+    - git fetch github-${CI_JOB_ID} ${SYNC_ENVIRONMENT:-staging}:overlay-version-bump-${CI_JOB_ID}
+    - git checkout overlay-version-bump-${CI_JOB_ID}
+    - echo "INFO - checking values files"
+    - test -e ${CHART_DIR}/values-${SYNC_ENVIRONMENT}.yaml || ( echo "ERROR - ${CHART_DIR}/values-${SYNC_ENVIRONMENT}.yaml doesn't exists" ; exit 1 )
+    - test -e ${CHART_DIR}/Chart.yaml || ( echo "ERROR - ${CHART_DIR}/Chart.yaml doesn't exists" ; exit 1 )
+    - |
+      for CONTAINER in $(echo ${SERVICES}); do
+        if [[ "${CI_COMMIT_REF_NAME}" == "main" ]]; then
+          export THIS_TAG="main@$(cat ${DIGESTS_FOLDER}/${CONTAINER})"
+          echo "INFO - container ${CONTAINER} SHA is: ${THIS_TAG}"
+        else
+          export THIS_TAG="${CI_COMMIT_TAG}"
+        fi
+        if [ -z "${THIS_TAG}" ]; then
+          echo "ERROR - can't find tag for container ${CONTAINER}"
+          exit 1
+        fi
+        echo "INFO - bumping version ${THIS_TAG} to ${CONTAINER} image tag"
+        CONTAINER_KEY=${CONTAINER}
+        if [[ "${CHART_DIR}" == "mender" ]]; then
+          case ${CONTAINER} in
+            deviceauth)
+              CONTAINER_KEY="device_auth"
+              ;;
+            create-artifact-worker)
+              CONTAINER_KEY="create_artifact_worker"
+              ;;
+            generate-delta-worker)
+              CONTAINER_KEY="generate_delta_worker"
+              ;;
+            iot-manager)
+              CONTAINER_KEY="iot_manager"
+              ;;
+          esac
+        elif [[ "${CHART_DIR}" == "alvaldi" ]]; then
+          case ${CONTAINER} in
+            iot-manager)
+              CONTAINER_KEY="iotManager"
+              ;;
+          esac
+        fi
+        THIS_KEY=".${CONTAINER_KEY}.image.tag" THIS_VALUE="${THIS_TAG}" yq -i 'eval(strenv(THIS_KEY)) = strenv(THIS_VALUE)' ${CHART_DIR}/values-${SYNC_ENVIRONMENT}.yaml
+        if [[ "${CONTAINER}" == "gui" ]]; then
+          THIS_KEY=".${CONTAINER_KEY}.image.registry" THIS_VALUE="${HELM_MENDER_PUBLISH_REGISTRY}" yq -i 'eval(strenv(THIS_KEY)) = strenv(THIS_VALUE)' ${CHART_DIR}/values-${SYNC_ENVIRONMENT}.yaml
+          THIS_KEY=".${CONTAINER_KEY}.image.repository" THIS_VALUE="${HELM_MENDER_PUBLISH_REPOSITORY}" yq -i 'eval(strenv(THIS_KEY)) = strenv(THIS_VALUE)' ${CHART_DIR}/values-${SYNC_ENVIRONMENT}.yaml
+        fi
+      done
+    - git add ${CHART_DIR}/values-${SYNC_ENVIRONMENT}.yaml
+    - echo "DEBUG - display values file content"
+    - cat ${CHART_DIR}/values-${SYNC_ENVIRONMENT}.yaml
+    - echo "INFO - bumping helm chart version"
+    - FULL_VERSION=$(yq ".version" ${CHART_DIR}/Chart.yaml)
+    - MAJOR_VERSION=$(echo $FULL_VERSION | cut -f1 -d.)
+    - MINOR_VERSION=$(echo $FULL_VERSION | cut -f2 -d.)
+    - PATCH_VERSION=$(echo $FULL_VERSION | cut -f3 -d. | cut -f1 -d\-)
+    - THIS_VALUE="${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}-${HELM_PATCH_VERSION}" yq -i '.version = strenv(THIS_VALUE)' ${CHART_DIR}/Chart.yaml
+    - git add ${CHART_DIR}/Chart.yaml
+    - cat ${CHART_DIR}/Chart.yaml
+    - git commit --signoff --message "[CI/CD] bump helm chart"
+    - |
+      for retry in $(seq 5); do
+        if git push github-${CI_JOB_ID} overlay-version-bump-${CI_JOB_ID}:${SYNC_ENVIRONMENT:-staging}; then
+          exit 0
+        fi
+        git fetch github-${CI_JOB_ID} ${SYNC_ENVIRONMENT:-staging}
+        git rebase github-${CI_JOB_ID}/${SYNC_ENVIRONMENT:-staging}
+        sleep ${TIMEOUT_SECONDS:-5}
+      done
+      echo "ERROR - can't push to github"
+      exit 1
+  after_script:
+    - git remote remove github-${CI_JOB_ID}
+    - cd ${PROJECT_FOLDER}
+    - rm -rf /tmp/helm
+
+#
+# Mender Helm Rolling release
+#
+mender-helm-version-bump:staging:
+  extends: .helm-version-bump
+  resource_group: mender-helm
+  stage: deploy-staging
+  variables:
+    GITHUB_HELM_REPO: "mendersoftware/mender-helm"
+    SERVICES: gui
+    CHART_DIR: "mender"
+    SYNC_ENVIRONMENT: staging
+    HELM_PATCH_VERSION: ${CI_PIPELINE_ID}-staging # pre-release version for trigger staging only deploy
