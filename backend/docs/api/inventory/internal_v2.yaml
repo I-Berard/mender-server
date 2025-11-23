@@ -1,0 +1,168 @@
+openapi: 3.0.1
+info:
+  title: Device inventory filters and search
+  description: |
+    An API for inventory-based filters management and device search.
+    Not exposed via the API Gateway - intended for internal use only.
+  version: "1"
+tags:
+  - name: Internal API
+paths:
+  /api/internal/v2/inventory/tenants/{tenant_id}/filters/search:
+    post:
+      tags:
+      - Internal API
+      summary: Search device inventories based on attributes
+      description: |
+        Returns a paged collection of devices and their attributes.
+
+        It accepts optional filters and sort parameters as body parameters.
+      operationId: Inventory Internal V2 Search Device Inventories
+      parameters:
+      - name: tenant_id
+        in: path
+        description: Tenant ID.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The search and sort parameters of the filter
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  type: number
+                  description: Starting page.
+                  format: integer
+                per_page:
+                  type: number
+                  description: Number of results per page.
+                  format: integer
+                device_ids:
+                  type: array
+                  description: List of device IDs
+                  items:
+                    type: string
+                    description: Attribute filter predicate
+                text:
+                  type: string
+                  description: Free-text search query
+                filters:
+                  type: array
+                  description: "List of filter predicates, chained with boolean AND\
+                    \ operators to build the search condition definition."
+                  items:
+                    $ref: './schemas.yaml#/components/schemas/FilterPredicate'
+                sort:
+                  type: array
+                  description: List of ordered sort criterias
+                  items:
+                    $ref: './schemas.yaml#/components/schemas/SortCriteria'
+                attributes:
+                  type: array
+                  description: List of attributes to select and return
+                  items:
+                    $ref: '#/components/schemas/SelectAttribute'
+        required: false
+      responses:
+        "200":
+          description: Successful response.
+          headers:
+            X-Total-Count:
+              description: Custom header indicating the total number of devices for
+                the given query parameters
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                title: ListOfDevices
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceInventory'
+              example:
+              - id: 291ae0e5956c69c2267489213df4459d19ed48a806603def19d417d004a4b67e
+                attributes:
+                - name: ip_addr
+                  scope: inventory
+                  value: 1.2.3.4
+                  description: IP address
+                - name: mac_addr
+                  scope: inventory
+                  value: 00.01:02:03:04:05
+                  description: MAC address
+                updated_ts: 2016-10-03T16:58:51.639Z
+              - id: 76f40e5956c699e327489213df4459d1923e1a806603def19d417d004a4a3ef
+                attributes:
+                - name: mac
+                  scope: inventory
+                  value: 00:01:02:03:04:05
+                  description: MAC address
+                updated_ts: 2016-10-04T18:24:21.432Z
+        "400":
+          $ref: '../common/responses.yaml#/components/responses/InvalidRequestError'
+        "500":
+          $ref: '../common/responses.yaml#/components/responses/InternalServerError'
+components:
+  schemas:
+    DeviceInventory:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Mender-assigned unique ID.
+        updated_ts:
+          type: string
+          description: Timestamp of the most recent attribute update.
+        attributes:
+          type: array
+          description: A list of attribute descriptors.
+          items:
+            $ref: './schemas.yaml#/components/schemas/AttributeV2'
+      example:
+        id: 291ae0e5956c69c2267489213df4459d19ed48a806603def19d417d004a4b67e
+        attributes:
+        - name: ip_addr
+          scope: inventory
+          value: 1.2.3.4
+          description: IP address
+        - name: mac_addr
+          scope: inventory
+          value: 00.01:02:03:04:05
+          description: MAC address
+        updated_ts: 2016-10-03T16:58:51.639Z
+    SelectAttribute:
+      required:
+      - attribute
+      - scope
+      type: object
+      properties:
+        attribute:
+          type: string
+          description: Attribute name.
+        scope:
+          $ref: '#/components/schemas/Scope'
+      description: Inventory attribute
+      example:
+        attribute: serial_no
+        scope: inventory
+    Scope:
+      type: string
+      description: |
+        The scope of the attribute.
+
+        Scope is a string and acts as namespace for the attribute name.
+
+        * __inventory__: Attributes reported by the device.
+        * __system__: Attributes populated by the mender-server.
+        * __identity__: Device's identity attributes provided in the device's auth request.
+        * __monitor__: Attributes populated by the monitoring add-on.
+        * __tags__: User-defined attributes associated with the device.
+      enum:
+        - system
+        - identity
+        - inventory
+        - monitor
+        - tags
