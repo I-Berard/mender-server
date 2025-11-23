@@ -1,0 +1,104 @@
+openapi: 3.0.1
+info:
+  title: Device inventory
+  description: |
+    An API for uploading device attributes. Intended for use by devices.
+
+    Devices can upload vendor-specific attributes (software/hardware info, health checks, metrics, etc.) of various data types to the backend.
+  version: "1"
+tags:
+  - name: Device API
+paths:
+  /api/devices/v1/inventory/device/attributes:
+    put:
+      tags:
+      - Device API
+      summary: Replace the set of attributes for a device
+      description: |
+        Replaces the attribute set for the authenticated device with the provided one.
+        The device ID is retrieved from the authorization header.
+
+        This method replaces all the attributes with the new set:
+
+        * attributes not provided in the set are removed from the db
+
+        * the values of existing attributes are overwritten
+
+        * attributes assigned for the first time are automatically created
+      operationId: Replace Attributes
+      requestBody:
+        description: A list of attribute descriptors.
+        content:
+          application/json:
+            schema:
+              title: ListOfAttributes
+              type: array
+              example:
+              - name: ip_addr
+                value: 1.2.3.4
+                description: IP address
+              - name: mac_addr
+                value: 00.01:02:03:04:05
+                description: MAC address
+              items:
+                $ref: './schemas.yaml#/components/schemas/Attribute'
+        required: true
+      responses:
+        "200":
+          description: Attributes were uploaded successfully.
+          content: {}
+        "401":
+          $ref: '../common/responses.yaml#/components/responses/UnauthorizedError'
+        "400":
+          $ref: '../common/responses.yaml#/components/responses/InvalidRequestError'
+        "500":
+          $ref: '../common/responses.yaml#/components/responses/InternalServerError'
+      security:
+      - DeviceJWT: []
+    patch:
+      tags:
+      - Device API
+      summary: Assign a set of attributes for a device
+      description: |
+        Saves the provided attribute set for the authenticated device.
+        The device ID is retrieved from the authorization header.
+
+        This method has upsert semantics:
+
+        * the values of existing attributes are overwritten
+
+        * attributes assigned for the first time are automatically created
+      operationId: Assign Attributes
+      requestBody:
+        description: A list of attribute descriptors.
+        content:
+          application/json:
+            schema:
+              title: ListOfAttributes
+              type: array
+              example:
+              - name: ip_addr
+                value: 1.2.3.4
+                description: IP address
+              - name: mac_addr
+                value: 00.01:02:03:04:05
+                description: MAC address
+              items:
+                $ref: './schemas.yaml#/components/schemas/Attribute'
+        required: true
+      responses:
+        "200":
+          description: Attributes were uploaded successfully.
+          content: {}
+        "401":
+          $ref: '../common/responses.yaml#/components/responses/UnauthorizedError'
+        "400":
+          $ref: '../common/responses.yaml#/components/responses/InvalidRequestError'
+        "500":
+          $ref: '../common/responses.yaml#/components/responses/InternalServerError'
+      security:
+      - DeviceJWT: []
+components:
+  securitySchemes:
+    DeviceJWT:
+      $ref: '../common/securitySchemes.yaml#/components/securitySchemes/DeviceJWT'
